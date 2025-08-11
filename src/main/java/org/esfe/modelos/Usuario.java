@@ -24,11 +24,11 @@ public class Usuario {
     @NotBlank(message = "La contraseña es requerida")
     private String clave;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name="usuario_rol",
-            joinColumns = @JoinColumn(name="usuario_id"),
-            inverseJoinColumns = @JoinColumn(name="rol_id"))
-    private List<Rol> roles;
+//    @ManyToMany(fetch = FetchType.EAGER)
+//    @JoinTable(name="usuario_rol",
+//            joinColumns = @JoinColumn(name="usuario_id"),
+//            inverseJoinColumns = @JoinColumn(name="rol_id"))
+//    private List<Rol> roles;
 
     public Integer getId() {
         return id;
@@ -70,21 +70,21 @@ public class Usuario {
         this.clave = clave;
     }
 
-    public List<Rol> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(List<Rol> roles) {
-        this.roles = roles;
-    }
-
-    /**
-     * Metodo agregar roles, por si no hay en la tabla
-     */
-    public void agregar(Rol tempRol){
-        if (roles == null){
-            roles = new LinkedList<>();
-        }
-        roles.add(tempRol);
-    }
+//    public List<Rol> getRoles() {
+//        return roles;
+//    }
+//
+//    public void setRoles(List<Rol> roles) {
+//        this.roles = roles;
+//    }
+//
+//    /**
+//     * Metodo agregar roles, por si no hay en la tabla
+//     */
+//    public void agregar(Rol tempRol){
+//        if (roles == null){
+//            roles = new LinkedList<>();
+//        }
+//        roles.add(tempRol);
+//    }
 }
