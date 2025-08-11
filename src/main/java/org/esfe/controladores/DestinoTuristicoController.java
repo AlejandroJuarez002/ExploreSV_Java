@@ -44,4 +44,9 @@ public class DestinoTuristicoController {
 
         return "destinoturistico/index";
     }
+
+    @GetMapping("/create")
+    public String create(DestinoTuristico destinoTuristico){
+        return "grupo/create";
+    }
 }
