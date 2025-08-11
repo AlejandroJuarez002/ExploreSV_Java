@@ -24,4 +24,8 @@ public class DestinoTuristico {
     @NotBlank (message = "El horario es requerido")
     private String horario;
 
+    // Relación con Imagen (foránea en Imagen)
+    //@OneToMany(mappedBy = "destinoTuristico", cascade = CascadeType.ALL, orphanRemoval = true)
+    //private List<Imagen> imagenes
+
 }
