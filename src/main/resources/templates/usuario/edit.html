@@ -1,0 +1,50 @@
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="/layouts/_mainLayout">
+
+<div layout:fragment="content">
+    <h1>Editar Usuario</h1>
+    <form th:action="@{/usuarios/save}" th:object="${usuario}" method="post">
+
+        <input type="hidden" th:field="*{id}">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="nombre">Nombre</label>
+                    <input type="text" class="form-control" th:field="*{nombre}" id="nombre" placeholder="Escriba su nombre de usuario porfavor." required>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="apellido">Apellido</label>
+                    <input type="text" class="form-control" th:field="*{apellido}" id="apellido" placeholder="Escriba su apellido por favor." required>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="nombreUsuario">Nombre de Usuario</label>
+                    <input type="text" class="form-control" th:field="*{nombreUsuario}" id="nombreUsuario" placeholder="Escriba el nombre de usuario por favor." required>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="clave">Contraseña</label>
+                    <input type="password" class="form-control" th:field="*{clave}" id="clave" placeholder="Escriba su contraseña por favor." required>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+        <a th:href="@{/usuarios}">Regresar</a>
+    </form>
+</div>
