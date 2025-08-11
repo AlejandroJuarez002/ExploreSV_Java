@@ -8,10 +8,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.Optional;
@@ -48,5 +51,18 @@ public class DestinoTuristicoController {
     @GetMapping("/create")
     public String create(DestinoTuristico destinoTuristico){
         return "grupo/create";
+    }
+
+    @PostMapping("/save")
+    public String save(DestinoTuristico destinoTuristico, BindingResult result, Model model, RedirectAttributes attributes){
+        if(result.hasErrors()){
+            model.addAttribute (destinoTuristico);
+            attributes.addFlashAttribute ( "error","No se pudo guardar debido a un error." );
+            return "destinoturistico/create";
+        }
+
+        destinoTuristicoService.createOEdit ( destinoTuristico );
+        attributes.addFlashAttribute ( "msg", "Grupo creado correctamente");
+        return "redirect:/destinoturisticos";
     }
 }
