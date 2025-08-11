@@ -1,0 +1,60 @@
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="/layouts/_mainLayout">
+
+<div layout:fragment="content">
+        <div th:if="${msg != null}">
+            <script>
+                Swal.fire({
+                title: "Confirmacion",
+                text: '[[${msg}]]',
+                icon: "success"
+                });
+            </script>
+        </div>
+    <div th:if="${error != null}">
+        <script>
+            Swal.fire({
+                title: "Error",
+                text: '[[${error}]]',
+                icon: "error'
+            })
+        </script>
+    </div>
+
+    <h1>Destino turisticos</h1>
+    <a th:href="@{/destinoturistico/create}" class="btn btn-outline-primary">Nuevo grupo</a>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Nombre</th>
+            <th>Descripcion</th>
+            <th>ubicacion</th>
+            <th>Horario</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item : ${destinosturisticos}">
+            <td th:text="${item.id}"></td>
+            <td th:text="${item.nombre}"></td>
+            <td th:text="${item.descripcion}"></td>
+            <td>
+                <a th:href="@{/destinoturisticos/details/{id} (id = ${item.id}) }" class="btn btn-outline-secondary">Detalles</a>
+                <a th:href="@{/destinoturisticos/edit/{id} (id = ${item.id}) }" class="btn btn-outline-info">Editar</a>
+                <a th:href="@{/destinoturisticos/remove/{id} (id = ${item.id}) }" class="btn btn-outline-danger">Eliminar</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <li class="page-item" th:each="pageNumber : ${pageNumbers}">
+                <a class="page-link" th:href="@{|/destinoturisticos?page=${pageNumber}|}" th:text="${pageNumber}"></a>
+            </li>
+        </ul>
+    </nav>
+
+</div>
