@@ -80,14 +80,14 @@ public class DestinoTuristicoController {
 
     @GetMapping("/remove/{Id}")
     public  String remove(@PathVariable("Id") Integer Id, Model model){
-        DestinoTuristico destinoTuristico = destinoTuristicoService.buscarPorId(Id).get ();
-        model.addAttribute("destinoTuristico", destinoTuristico);
+        DestinoTuristico destino = destinoTuristicoService.buscarPorId(Id).get();
+        model.addAttribute("destino", destino);
         return "destinoTuristico/delete";
     }
 
     @PostMapping("/delete")
-    public String delete(DestinoTuristico destinoTuristico, RedirectAttributes attributes){
-        destinoTuristicoService.eliminarPorId(destinoTuristico.getId());
+    public String delete(DestinoTuristico destino, RedirectAttributes attributes){
+        destinoTuristicoService.eliminarPorId(destino.getId());
         attributes.addFlashAttribute("msg", "Destino eliminado correctamente");
         return "redirect:/destinoTuristicos";
     }

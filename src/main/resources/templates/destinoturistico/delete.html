@@ -10,23 +10,23 @@
         <hr />
         <dl class="row">
             <dt class="col-sm-2">Id</dt>
-            <dd class="col-sm-10" th:text="${destinoTuristico.Id}"></dd>
+            <dd class="col-sm-10" th:text="${destino.Id}"></dd>
 
             <dt class="col-sm-2">Nombre</dt>
-            <dd class="col-sm-10" th:text="${destinoTuristico.nombre}"></dd>
+            <dd class="col-sm-10" th:text="${destino.nombre}"></dd>
 
             <dt class="col-sm-2">Descripcion</dt>
-            <dd class="col-sm-10" th:text="${destinoTuristico.descripcion}"></dd>
+            <dd class="col-sm-10" th:text="${destino.descripcion}"></dd>
 
             <dt class="col-sm-2">Ubicacion</dt>
-            <dd class="col-sm-10" th:text="${destinoTuristico.ubicacion}"></dd>
+            <dd class="col-sm-10" th:text="${destino.ubicacion}"></dd>
 
             <dt class="col-sm-2">Horario</dt>
-            <dd class="col-sm-10" th:text="${destinoTuristico.horario}"></dd>
+            <dd class="col-sm-10" th:text="${destino.horario}"></dd>
         </dl>
 
         <form th:action="@{/destinoTuristicos/delete}" method="post">
-            <input type="hidden" name="Id" th:value="${destimoTuristico.Id}">
+            <input type="hidden" Id="id" name="Id" th:value="${destino.Id}">
             <input type="submit" value="Eliminar" class="btn btn-danger">
             <a th:href="@{/destinoTuristicos}">Regresar</a>
         </form>

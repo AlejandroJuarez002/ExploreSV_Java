@@ -11,7 +11,7 @@ import java.util.List;
 public class DestinoTuristico {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer Id;
+    private Integer id;
 
     @NotBlank(message = "El nombre es requerido")
     private String nombre;
@@ -30,11 +30,11 @@ public class DestinoTuristico {
     private List<Imagen> imagenes;
 
     public Integer getId() {
-        return Id;
+        return id;
     }
 
     public void setId(Integer id) {
-        this.Id = Id;
+        this.id = id;
     }
 
     public String getNombre() {
