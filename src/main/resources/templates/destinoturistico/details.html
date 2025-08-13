@@ -1,0 +1,31 @@
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="/layouts/_mainLayout" xmlns="http://www.w3.org/1999/html">
+
+<div layout:fragment="content">
+    <h1>Detalles del destino turistico</h1>
+    <div>
+       <hr />
+        <dl class="row">
+        <dt class="col-sm-2">ID</dt>
+        <dd class="col-sm-10" th:text="${destinoTuristico.Id}"></dd>
+
+        <dt class="col-sm-2">Nombre</dt>
+        <dd class="col-sm-10" th:text="${destinoTuristico.nombre}"></dd>
+
+        <dt class="col-sm-2">Descripcion</dt>
+        <dd class="col-sm-10" th:text="${destinoTuristico.descripcion}"></dd>
+
+        <dt class="col-sm-2">Ubicacion</dt>
+        <dd class="col-sm-10" th:text="${destinoTuristico.ubicacion}"></dd>
+
+        <dt class="col-sm-2">Horario</dt>
+        <dd class="col-sm-10" th:text="${destinoTuristico.horario}"></dd>
+        </dl>
+
+        <a th:href="@{/destinoTuristicos/edit/{Id} (Id = ${destinoTuristico.Id}) }" class="btn btn-outline-info">Editar</a>
+        <a th:href="@{/destinoTuristicos}">Regresar</a>
+    </div>
+
+</div>

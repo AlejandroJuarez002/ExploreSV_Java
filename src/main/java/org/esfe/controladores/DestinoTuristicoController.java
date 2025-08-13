@@ -4,15 +4,13 @@ package org.esfe.controladores;
 import org.esfe.modelos.DestinoTuristico;
 import org.esfe.servicios.interfaces.IDestinoTuristicoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.Banner;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -22,7 +20,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Controller
-@RequestMapping("/destinoTuristico")
+@RequestMapping("/destinoTuristicos")
 public class DestinoTuristicoController {
 
     @Autowired
@@ -35,7 +33,7 @@ public class DestinoTuristicoController {
         Pageable pageable = PageRequest.of( currentPage, pageSize );
 
         Page<DestinoTuristico> destinoTuristicos = destinoTuristicoService.buscarTodosPaginados ( pageable );
-        model.addAttribute ( "destinosturisticos", destinoTuristicos);
+        model.addAttribute ( "destinoTuristicos", destinoTuristicos);
 
         int totalPages = destinoTuristicos.getTotalPages();
         if (totalPages > 0){
@@ -45,12 +43,12 @@ public class DestinoTuristicoController {
             model.addAttribute ( "pageNumbers", pageNumbers );
         }
 
-        return "destinoturistico/index";
+        return "destinoTuristico/index";
     }
 
     @GetMapping("/create")
     public String create(DestinoTuristico destinoTuristico){
-        return "grupo/create";
+        return "destinoTuristico/create";
     }
 
     @PostMapping("/save")
@@ -58,11 +56,39 @@ public class DestinoTuristicoController {
         if(result.hasErrors()){
             model.addAttribute (destinoTuristico);
             attributes.addFlashAttribute ( "error","No se pudo guardar debido a un error." );
-            return "destinoturistico/create";
+            return "destinoTuristico/create";
         }
 
         destinoTuristicoService.createOEdit ( destinoTuristico );
         attributes.addFlashAttribute ( "msg", "Grupo creado correctamente");
-        return "redirect:/destinoturisticos";
+        return "redirect:/destinoTuristicos";
+    }
+
+    @GetMapping("/details/{Id}")
+    public String details(@PathVariable("Id") Integer Id, Model model){
+        DestinoTuristico destinoTuristico = destinoTuristicoService.buscarPorId (Id).get();
+        model.addAttribute ( "destinoTuristico", destinoTuristico);
+        return "destinoTuristico/details";
+    }
+
+    @GetMapping("/edit/{Id}")
+    public String edit(@PathVariable("Id") Integer Id, Model model){
+        DestinoTuristico destinoTuristico = destinoTuristicoService.buscarPorId (Id).get();
+        model.addAttribute ("destinoTuristico", destinoTuristico);
+        return "destinoTuristico/edit";
+    }
+
+    @GetMapping("/remove/{Id}")
+    public  String remove(@PathVariable("Id") Integer Id, Model model){
+        DestinoTuristico destinoTuristico = destinoTuristicoService.buscarPorId(Id).get ();
+        model.addAttribute("destinoTuristico", destinoTuristico);
+        return "destinoTuristico/delete";
+    }
+
+    @PostMapping("/delete")
+    public String delete(DestinoTuristico destinoTuristico, RedirectAttributes attributes){
+        destinoTuristicoService.eliminarPorId(destinoTuristico.getId());
+        attributes.addFlashAttribute("msg", "Destino eliminado correctamente");
+        return "redirect:/destinoTuristicos";
     }
 }

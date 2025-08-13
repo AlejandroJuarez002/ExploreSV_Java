@@ -24,26 +24,28 @@
     </div>
 
     <h1>Destino turisticos</h1>
-    <a th:href="@{/destinoturistico/create}" class="btn btn-outline-primary">Nuevo grupo</a>
+    <a th:href="@{/destinoTuristicos/create}" class="btn btn-outline-primary">Nuevo destino</a>
     <table class="table table-striped">
         <thead>
         <tr>
             <th>Id</th>
             <th>Nombre</th>
             <th>Descripcion</th>
-            <th>ubicacion</th>
+            <th>Ubicacion</th>
             <th>Horario</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="item : ${destinosturisticos}">
+        <tr th:each="item : ${destinoTuristicos}">
             <td th:text="${item.id}"></td>
             <td th:text="${item.nombre}"></td>
             <td th:text="${item.descripcion}"></td>
+            <td th:text="${item.ubicacion}"></td>
+            <td th:text="${item.horario}"></td>
             <td>
-                <a th:href="@{/destinoturisticos/details/{id} (id = ${item.id}) }" class="btn btn-outline-secondary">Detalles</a>
-                <a th:href="@{/destinoturisticos/edit/{id} (id = ${item.id}) }" class="btn btn-outline-info">Editar</a>
-                <a th:href="@{/destinoturisticos/remove/{id} (id = ${item.id}) }" class="btn btn-outline-danger">Eliminar</a>
+                <a th:href="@{/destinoTuristicos/details/{id} (id = ${item.id}) }" class="btn btn-outline-secondary">Detalles</a>
+                <a th:href="@{/destinoTuristicos/edit/{id} (id = ${item.id}) }" class="btn btn-outline-info">Editar</a>
+                <a th:href="@{/destinoTuristicos/remove/{id} (id = ${item.id}) }" class="btn btn-outline-danger">Eliminar</a>
             </td>
         </tr>
         </tbody>
@@ -52,7 +54,7 @@
     <nav aria-label="Page navigation example">
         <ul class="pagination">
             <li class="page-item" th:each="pageNumber : ${pageNumbers}">
-                <a class="page-link" th:href="@{|/destinoturisticos?page=${pageNumber}|}" th:text="${pageNumber}"></a>
+                <a class="page-link" th:href="@{|/destinoTuristicos?page=${pageNumber}|}" th:text="${pageNumber}"></a>
             </li>
         </ul>
     </nav>
