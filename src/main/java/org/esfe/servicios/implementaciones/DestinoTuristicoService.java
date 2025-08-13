@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.Provider;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DestinoTuristicoService implements IDestinoTuristicoService {
@@ -27,12 +28,17 @@ public class DestinoTuristicoService implements IDestinoTuristicoService {
     }
 
     @Override
+    public Optional<DestinoTuristico> buscarPorId(Integer Id) {
+        return destinoTuristicoRepository.findById (Id);
+    }
+
+    @Override
     public DestinoTuristico createOEdit(DestinoTuristico destinoTuristico) {
         return destinoTuristicoRepository.save (destinoTuristico);
     }
 
     @Override
-    public void eliminarPorId(Integer id) {
-        destinoTuristicoRepository.deleteById (id);
+    public void eliminarPorId(Integer Id) {
+        destinoTuristicoRepository.deleteById (Id);
     }
 }

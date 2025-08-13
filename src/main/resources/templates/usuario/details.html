@@ -1,0 +1,30 @@
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="/layouts/_mainLayout">
+
+<div layout:fragment="content">
+  <h1>Detalles del Usuario</h1>
+  <div>
+    <hr />
+    <dl class="row">
+      <dt class="col-sm-2">ID</dt>
+      <dd class="col-sm-10" th:text="${usuario.id}"></dd>
+
+      <dt class="col-sm-2">Nombre</dt>
+      <dd class="col-sm-10" th:text="${usuario.nombre}"></dd>
+
+      <dt class="col-sm-2">Apellido</dt>
+      <dd class="col-sm-10" th:text="${usuario.apellido}"></dd>
+
+      <dt class="col-sm-2">Nombre de Usuario</dt>
+      <dd class="col-sm-10" th:text="${usuario.nombreUsuario}"></dd>
+
+      <dt class="col-sm-2">Contraseña</dt>
+      <dd class="col-sm-10" th:text="${usuario.clave}"></dd>
+    </dl>
+
+    <a th:href="@{/usuarios/edit/{id} (id=${usuario.id}) }" class="btn btn-outline-info">Editar</a>
+    <a th:href="@{/usuarios}">Regresar</a>
+  </div>
+</div>
