@@ -1,0 +1,45 @@
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="/layouts/_mainLayout" xmlns="http://www.w3.org/1999/html">
+
+<div layout:fragment="content">
+    <h1>Crear nuevo destinoturistico</h1>
+    <form th:action="@{/destinoTuristicos/save}" th:object="${destinoTuristico}" method="post">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="nombre">Nombre</label>
+                    <input type="text" class="form-control" th:field="*{nombre}" id="nombre" placeholder="Nombre del destino turistico" required>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="descripcion">Descripcion</label>
+                    <textarea class="form-control" th:field="*{descripcion}" id="descripcion" cols="12" rows="3" required></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="ubicacion">Ubicacion</label>
+                    <textarea class="form-control" th:field="*{ubicacion}" id="ubicacion" cols="12" rows="3" required></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="horario">Horario</label>
+                    <textarea class="form-control" th:field="*{horario}" id="horario" cols="12" rows="3" required></textarea>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a th:href="@{/destinoTuristicos}">Regresar</a>
+    </form>
+</div>
