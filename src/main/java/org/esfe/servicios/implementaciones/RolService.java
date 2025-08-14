@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RolService implements IRolService {
@@ -23,6 +24,11 @@ public class RolService implements IRolService {
     @Override
     public List<Rol> obtenerTodos() {
         return rolRepository.findAll();
+    }
+
+    @Override
+    public Optional<Rol> buscarPorId(Integer id) {
+        return rolRepository.findById(id);
     }
 
     @Override
