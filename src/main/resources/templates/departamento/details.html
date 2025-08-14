@@ -1,0 +1,21 @@
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="/layouts/_mainLayout">
+
+<div layout:fragment="content">
+  <h1>Detalles del departamento</h1>
+  <div>
+    <hr />
+    <dl class="row">
+      <dt class="col-sm-2">ID</dt>
+      <dd class="col-sm-10" th:text="${departamento.id}"></dd>
+
+      <dt class="col-sm-2">Nombre</dt>
+      <dd class="col-sm-10" th:text="${departamento.nombre}"></dd>
+    </dl>
+
+    <a th:href="@{/departamentos/edit/{id}(id=${departamento.id})}" class="btn btn-outline-info">Editar</a>
+    <a th:href="@{/departamentos}">Regresar</a>
+  </div>
+</div>
