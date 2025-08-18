@@ -1,45 +1,75 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="/layouts/_mainLayout" xmlns="http://www.w3.org/1999/html">
+      layout:decorate="/layouts/_mainLayout">
 
 <div layout:fragment="content">
-    <h1>Crear nuevo destinoturistico</h1>
-    <form th:action="@{/destinoTuristicos/save}" th:object="${destinoTuristico}" method="post">
+    <h1>Crear nuevo destino turístico</h1>
+    <form th:action="@{/destinoTuristicos/save}"
+          th:object="${destinoTuristico}"
+          method="post"
+          enctype="multipart/form-data">
+
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="nombre">Nombre</label>
-                    <input type="text" class="form-control" th:field="*{nombre}" id="nombre" placeholder="Nombre del destino turistico" required>
+                    <input type="text" class="form-control"
+                           th:field="*{nombre}" id="nombre"
+                           placeholder="Nombre del destino turístico" required>
                 </div>
             </div>
         </div>
+
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label for="descripcion">Descripcion</label>
-                    <textarea class="form-control" th:field="*{descripcion}" id="descripcion" cols="12" rows="3" required></textarea>
+                    <label for="descripcion">Descripción</label>
+                    <textarea class="form-control"
+                              th:field="*{descripcion}" id="descripcion"
+                              cols="12" rows="3" required></textarea>
                 </div>
             </div>
         </div>
+
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label for="ubicacion">Ubicacion</label>
-                    <textarea class="form-control" th:field="*{ubicacion}" id="ubicacion" cols="12" rows="3" required></textarea>
+                    <label for="ubicacion">Ubicación</label>
+                    <textarea class="form-control"
+                              th:field="*{ubicacion}" id="ubicacion"
+                              cols="12" rows="3" required></textarea>
                 </div>
             </div>
         </div>
+
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="horario">Horario</label>
-                    <textarea class="form-control" th:field="*{horario}" id="horario" cols="12" rows="3" required></textarea>
+                    <textarea class="form-control"
+                              th:field="*{horario}" id="horario"
+                              cols="12" rows="3" required></textarea>
                 </div>
             </div>
         </div>
+
+        <!-- Campo para subir imagen -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="imagenFiles">Imágenes del destino</label>
+                    <input type="file" id="imagenFiles"
+                           name="imagenFiles"
+                           accept="image/*"
+                           class="form-control"
+                           multiple required>
+                </div>
+            </div>
+        </div>
+
         <hr>
         <button type="submit" class="btn btn-primary">Guardar</button>
-        <a th:href="@{/destinoTuristicos}">Regresar</a>
+        <a th:href="@{/destinoTuristicos}" class="btn btn-secondary">Regresar</a>
     </form>
 </div>

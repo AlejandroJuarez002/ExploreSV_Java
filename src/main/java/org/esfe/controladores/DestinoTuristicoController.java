@@ -2,6 +2,8 @@ package org.esfe.controladores;
 
 
 import org.esfe.modelos.DestinoTuristico;
+import org.esfe.modelos.Imagen;
+import org.esfe.modelos.ImagenDTO;
 import org.esfe.servicios.interfaces.IDestinoTuristicoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
@@ -12,10 +14,11 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
-import java.util.Optional;
+import java.io.IOException;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -27,40 +30,79 @@ public class DestinoTuristicoController {
     private IDestinoTuristicoService destinoTuristicoService;
 
     @GetMapping
-    public String index(Model model, @RequestParam("page")Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
-        int currentPage = page.orElse ( 1 ) - 1;
-        int pageSize = size.orElse ( 5 );
-        Pageable pageable = PageRequest.of( currentPage, pageSize );
+    public String index(Model model,
+                        @RequestParam("page") Optional<Integer> page,
+                        @RequestParam("size") Optional<Integer> size) {
 
-        Page<DestinoTuristico> destinoTuristicos = destinoTuristicoService.buscarTodosPaginados ( pageable );
-        model.addAttribute ( "destinoTuristicos", destinoTuristicos);
+        int currentPage = page.orElse(1) - 1;
+        int pageSize = size.orElse(5);
+        Pageable pageable = PageRequest.of(currentPage, pageSize);
 
-        int totalPages = destinoTuristicos.getTotalPages();
-        if (totalPages > 0){
-            List<Integer> pageNumbers = IntStream.rangeClosed ( 1, totalPages )
-                    .boxed ()
-                    .collect( Collectors.toList ( ));
-            model.addAttribute ( "pageNumbers", pageNumbers );
+        Page<DestinoTuristico> destinos = destinoTuristicoService.buscarTodosPaginados(pageable);
+
+        // Convertir imágenes a Base64
+        Page<Map<String, Object>> destinosDTO = destinos.map(dest -> {
+            List<ImagenDTO> imagenesDTO = dest.getImagenes().stream()
+                    .map(img -> new ImagenDTO(
+                            img.getId(),
+                            img.getBytesArrayImage() != null ?
+                                    Base64.getEncoder().encodeToString(img.getBytesArrayImage()) : null))
+                    .collect(Collectors.toList());
+
+            Map<String, Object> dto = new HashMap<> ();
+            dto.put("destino", dest);
+            dto.put("imagenes", imagenesDTO);
+            return dto;
+        });
+
+        model.addAttribute("destinoTuristicos", destinosDTO);
+
+        int totalPages = destinos.getTotalPages();
+        if (totalPages > 0) {
+            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages).boxed().collect(Collectors.toList());
+            model.addAttribute("pageNumbers", pageNumbers);
         }
 
         return "destinoTuristico/index";
     }
 
     @GetMapping("/create")
-    public String create(DestinoTuristico destinoTuristico){
+    public String create(DestinoTuristico destinoTuristico) {
         return "destinoTuristico/create";
     }
 
     @PostMapping("/save")
-    public String save(DestinoTuristico destinoTuristico, BindingResult result, Model model, RedirectAttributes attributes){
-        if(result.hasErrors()){
-            model.addAttribute (destinoTuristico);
-            attributes.addFlashAttribute ( "error","No se pudo guardar debido a un error." );
+    public String save(@ModelAttribute DestinoTuristico destinoTuristico,
+                       @RequestParam("imagenFiles") List<MultipartFile> imagenFiles,
+                       BindingResult result,
+                       Model model,
+                       RedirectAttributes attributes) {
+
+        if (result.hasErrors()) {
+            model.addAttribute(destinoTuristico);
+            attributes.addFlashAttribute("error", "No se pudo guardar debido a un error.");
             return "destinoTuristico/create";
         }
 
-        destinoTuristicoService.createOEdit ( destinoTuristico );
-        attributes.addFlashAttribute ( "msg", "Grupo creado correctamente");
+        try {
+            List<Imagen> listaImagenes = new ArrayList<>();
+            for (MultipartFile file : imagenFiles) {
+                if (!file.isEmpty()) {
+                    Imagen img = new Imagen();
+                    img.setBytesArrayImage(file.getBytes());
+                    img.setDestinoTuristico(destinoTuristico);
+                    listaImagenes.add(img);
+                }
+            }
+            destinoTuristico.setImagenes(listaImagenes);
+
+        } catch (IOException e) {
+            attributes.addFlashAttribute("error", "Error al procesar las imágenes.");
+            return "destinoTuristico/create";
+        }
+
+        destinoTuristicoService.createOEdit(destinoTuristico);
+        attributes.addFlashAttribute("msg", "Destino turístico creado correctamente.");
         return "redirect:/destinoTuristicos";
     }
 

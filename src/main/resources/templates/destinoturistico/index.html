@@ -4,57 +4,77 @@
       layout:decorate="/layouts/_mainLayout">
 
 <div layout:fragment="content">
-        <div th:if="${msg != null}">
-            <script>
-                Swal.fire({
-                title: "Confirmacion",
+
+    <!-- Mensajes -->
+    <div th:if="${msg != null}">
+        <script>
+            Swal.fire({
+                title: "Confirmación",
                 text: '[[${msg}]]',
                 icon: "success"
-                });
-            </script>
-        </div>
+            });
+        </script>
+    </div>
     <div th:if="${error != null}">
         <script>
             Swal.fire({
                 title: "Error",
                 text: '[[${error}]]',
-                icon: "error'
-            })
+                icon: "error"
+            });
         </script>
     </div>
 
-    <h1>Destino turisticos</h1>
+    <h1>Destinos turísticos</h1>
     <a th:href="@{/destinoTuristicos/create}" class="btn btn-outline-primary">Nuevo destino</a>
+
     <table class="table table-striped">
         <thead>
         <tr>
             <th>Id</th>
             <th>Nombre</th>
-            <th>Descripcion</th>
-            <th>Ubicacion</th>
+            <th>Descripción</th>
+            <th>Ubicación</th>
             <th>Horario</th>
+            <th>Imagen</th>
+            <th>Acciones</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="item : ${destinoTuristicos}">
-            <td th:text="${item.id}"></td>
-            <td th:text="${item.nombre}"></td>
-            <td th:text="${item.descripcion}"></td>
-            <td th:text="${item.ubicacion}"></td>
-            <td th:text="${item.horario}"></td>
+            <td th:text="${item.destino.id}"></td>
+            <td th:text="${item.destino.nombre}"></td>
+            <td th:text="${item.destino.descripcion}"></td>
+            <td th:text="${item.destino.ubicacion}"></td>
+            <td th:text="${item.destino.horario}"></td>
+
+            <!-- Mostrar primera imagen -->
             <td>
-                <a th:href="@{/destinoTuristicos/details/{id} (id = ${item.id}) }" class="btn btn-outline-secondary">Detalles</a>
-                <a th:href="@{/destinoTuristicos/edit/{id} (id = ${item.id}) }" class="btn btn-outline-info">Editar</a>
-                <a th:href="@{/destinoTuristicos/remove/{id} (id = ${item.id}) }" class="btn btn-outline-danger">Eliminar</a>
+                <div th:each="img : ${item.imagenes}">
+                    <img th:if="${img.base64Image != null}"
+                         th:src="'data:image/png;base64,' + ${img.base64Image}"
+                         alt="Imagen destino"
+                         style="width: 100px; height: 100px; object-fit: cover; margin: 2px;">
+                </div>
+            </td>
+
+            <td>
+                <a th:href="@{/destinoTuristicos/details/{id}(id=${item.destino.id})}" class="btn btn-outline-secondary">Detalles</a>
+                <a th:href="@{/destinoTuristicos/edit/{id}(id=${item.destino.id})}" class="btn btn-outline-info">Editar</a>
+                <a th:href="@{/destinoTuristicos/remove/{id}(id=${item.destino.id})}" class="btn btn-outline-danger"
+                   onclick="return confirm('¿Seguro que deseas eliminar este destino?');">Eliminar</a>
             </td>
         </tr>
         </tbody>
     </table>
 
+    <!-- Paginación -->
     <nav aria-label="Page navigation example">
         <ul class="pagination">
             <li class="page-item" th:each="pageNumber : ${pageNumbers}">
-                <a class="page-link" th:href="@{|/destinoTuristicos?page=${pageNumber}|}" th:text="${pageNumber}"></a>
+                <a class="page-link"
+                   th:href="@{|/destinoTuristicos?page=${pageNumber}|}"
+                   th:text="${pageNumber}"></a>
             </li>
         </ul>
     </nav>
