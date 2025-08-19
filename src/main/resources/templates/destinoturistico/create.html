@@ -5,7 +5,8 @@
 
 <div layout:fragment="content">
     <h1>Crear nuevo destino turístico</h1>
-    <form th:action="@{/destinoTuristicos/save}"
+    <form id="destinoForm"
+          th:action="@{/destinoTuristicos/save}"
           th:object="${destinoTuristico}"
           method="post"
           enctype="multipart/form-data">
@@ -54,22 +55,112 @@
             </div>
         </div>
 
-        <!-- Campo para subir imagen -->
+        <!-- Subida de imágenes -->
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="imagenFiles">Imágenes del destino</label>
                     <input type="file" id="imagenFiles"
-                           name="imagenFiles"
                            accept="image/*"
                            class="form-control"
-                           multiple required>
+                           multiple>
                 </div>
             </div>
         </div>
+
+        <!-- Vista previa -->
+        <div id="preview" class="d-flex flex-wrap mt-3"></div>
 
         <hr>
         <button type="submit" class="btn btn-primary">Guardar</button>
         <a th:href="@{/destinoTuristicos}" class="btn btn-secondary">Regresar</a>
     </form>
+
+    <script>
+        let selectedFiles = [];
+
+        document.getElementById("imagenFiles").addEventListener("change", function (event) {
+            Array.from(event.target.files).forEach(file => {
+                // Evitar duplicados comparando nombre + tamaño
+                let exists = selectedFiles.some(f => f.name === file.name && f.size === file.size);
+                if (!exists && file.type.startsWith("image/")) {
+                    selectedFiles.push(file);
+                }
+            });
+
+            renderPreview();
+
+            // Limpio el input para permitir volver a elegir más
+            event.target.value = "";
+        });
+
+        function renderPreview() {
+            let preview = document.getElementById("preview");
+            preview.innerHTML = "";
+
+            selectedFiles.forEach((file, index) => {
+                let reader = new FileReader();
+                reader.onload = function (e) {
+                    let div = document.createElement("div");
+                    div.style.position = "relative";
+                    div.style.display = "inline-block";
+                    div.style.margin = "5px";
+
+                    let img = document.createElement("img");
+                    img.src = e.target.result;
+                    img.width = 120;
+                    img.style.border = "1px solid #ccc";
+                    img.style.borderRadius = "5px";
+                    img.style.objectFit = "cover";
+
+                    // Botón para eliminar imagen de la selección
+                    let btn = document.createElement("button");
+                    btn.innerHTML = "×";
+                    btn.type = "button";
+                    btn.style.position = "absolute";
+                    btn.style.top = "2px";
+                    btn.style.right = "2px";
+                    btn.style.background = "red";
+                    btn.style.color = "white";
+                    btn.style.border = "none";
+                    btn.style.borderRadius = "50%";
+                    btn.style.width = "22px";
+                    btn.style.height = "22px";
+                    btn.style.cursor = "pointer";
+
+                    btn.onclick = function () {
+                        selectedFiles.splice(index, 1);
+                        renderPreview();
+                    };
+
+                    div.appendChild(img);
+                    div.appendChild(btn);
+                    preview.appendChild(div);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Al enviar, agregamos todas las imágenes seleccionadas al FormData
+        document.getElementById("destinoForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            let formData = new FormData(this);
+
+            selectedFiles.forEach(file => {
+                formData.append("imagenFiles", file);
+            });
+
+            fetch(this.action, {
+                method: this.method,
+                body: formData
+            }).then(response => {
+                if (response.ok) {
+                    window.location.href = "/destinoTuristicos";
+                } else {
+                    alert("Error al guardar el destino");
+                }
+            });
+        });
+    </script>
 </div>
