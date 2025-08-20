@@ -4,10 +4,12 @@ package org.esfe.controladores;
 import org.esfe.modelos.DestinoTuristico;
 import org.esfe.modelos.Imagen;
 import org.esfe.modelos.ImagenDTO;
+import org.esfe.repositorios.IDestinoTuristicoRepository;
 import org.esfe.servicios.interfaces.IDestinoTuristicoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,16 +31,28 @@ public class DestinoTuristicoController {
     @Autowired
     private IDestinoTuristicoService destinoTuristicoService;
 
+    @Autowired
+    private IDestinoTuristicoRepository destinoTuristicoRepository;
+
     @GetMapping
     public String index(Model model,
                         @RequestParam("page") Optional<Integer> page,
-                        @RequestParam("size") Optional<Integer> size) {
+                        @RequestParam("size") Optional<Integer> size,
+                        @RequestParam(value = "q", required = false) String q) {
 
         int currentPage = page.orElse(1) - 1;
         int pageSize = size.orElse(5);
         Pageable pageable = PageRequest.of(currentPage, pageSize);
 
-        Page<DestinoTuristico> destinos = destinoTuristicoService.buscarTodosPaginados(pageable);
+        Page<DestinoTuristico> destinos;
+
+        if (q != null && !q.isEmpty()) {
+            // Si hay búsqueda, no paginar (opcional: se puede implementar paginación también)
+            List<DestinoTuristico> resultados = destinoTuristicoRepository.findByNombreContainingIgnoreCase(q);
+            destinos = new PageImpl<> (resultados, pageable, resultados.size());
+        } else {
+            destinos = destinoTuristicoService.buscarTodosPaginados(pageable);
+        }
 
         // Convertir imágenes a Base64
         Page<Map<String, Object>> destinosDTO = destinos.map(dest -> {
@@ -49,13 +63,14 @@ public class DestinoTuristicoController {
                                     Base64.getEncoder().encodeToString(img.getBytesArrayImage()) : null))
                     .collect(Collectors.toList());
 
-            Map<String, Object> dto = new HashMap<> ();
+            Map<String, Object> dto = new HashMap<>();
             dto.put("destino", dest);
             dto.put("imagenes", imagenesDTO);
             return dto;
         });
 
         model.addAttribute("destinoTuristicos", destinosDTO);
+        model.addAttribute("q", q); // Mantener valor de búsqueda
 
         int totalPages = destinos.getTotalPages();
         if (totalPages > 0) {
@@ -133,4 +148,13 @@ public class DestinoTuristicoController {
         attributes.addFlashAttribute("msg", "Destino eliminado correctamente");
         return "redirect:/destinoTuristicos";
     }
+
+    @GetMapping("/search")
+    public String search(@RequestParam("q") String query, Model model) {
+        List<DestinoTuristico> resultados = destinoTuristicoRepository.findByNombreContainingIgnoreCase(query);
+        model.addAttribute("destinos", resultados);
+        model.addAttribute("q", query);
+        return "destinoTuristicos/index"; // usa la misma vista que el listado normal
+    }
+
 }

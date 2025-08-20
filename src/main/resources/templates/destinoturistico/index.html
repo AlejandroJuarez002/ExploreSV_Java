@@ -73,7 +73,7 @@
         <ul class="pagination">
             <li class="page-item" th:each="pageNumber : ${pageNumbers}">
                 <a class="page-link"
-                   th:href="@{|/destinoTuristicos?page=${pageNumber}|}"
+                   th:href="@{|/destinoTuristicos?page=${pageNumber}${q != null ? '&q=' + q : ''}|}"
                    th:text="${pageNumber}"></a>
             </li>
         </ul>
