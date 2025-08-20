@@ -4,4 +4,7 @@
     layout:decorate="/layouts/_mainLayout">
 <div layout:fragment="content">
     <h1 class="text-center">Destinos Turísticos recientes.</h1>
+    <div sec:authorize="isAnonymous()" class="alert alert-danger text center" role="alert">
+        Debes iniciar sesion para utilizar la aplicacion.
+    </div>
 </div>

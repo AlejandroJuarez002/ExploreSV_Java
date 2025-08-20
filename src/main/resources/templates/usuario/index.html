@@ -29,32 +29,36 @@
 
     <h1>Lista de Usuarios</h1>
     <a th:href="@{/usuarios/create}" class="btn btn-outline-primary">Nuevo Usuario</a>
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Apellido</th>
-            <th>NombreUsuario</th>
-            <th>Clave</th>
-            <th>Acciones</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="item : ${usuarios}">
-            <td th:text="${item.id}"></td>
-            <td th:text="${item.nombre}"></td>
-            <td th:text="${item.apellido}"></td>
-            <td th:text="${item.nombreUsuario}"></td>
-            <td th:text="${item.clave}"></td>
-            <td>
-                <a th:href="@{/usuarios/details/{id} (id = ${item.id})}" class="btn btn-outline-secondary">Detalles</a>
-                <a th:href="@{/usuarios/edit/{id} (id = ${item.id})}" class="btn btn-outline-info">Editar</a>
-                <a th:href="@{/usuarios/remove/{id} (id = ${item.id})}" class="btn btn-outline-danger">Eliminar</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <div class="card mb-4">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>NombreUsuario</th>
+                <th>Clave</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${usuarios}">
+                <td th:text="${item.id}"></td>
+                <td th:text="${item.nombre}"></td>
+                <td th:text="${item.apellido}"></td>
+                <td th:text="${item.nombreUsuario}"></td>
+                <td>*****</td>
+                <td th:text="${item.status == 1} ? 'Activo' : 'Inactivo'"></td>
+                <td>
+                    <a th:href="@{/usuarios/details/{id} (id = ${item.id})}" class="btn btn-outline-secondary">Detalles</a>
+                    <a th:href="@{/usuarios/edit/{id} (id = ${item.id})}" class="btn btn-outline-info">Editar</a>
+                    <a th:href="@{/usuarios/remove/{id} (id = ${item.id})}" class="btn btn-outline-danger">Eliminar</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 
     <!--Paginador de registros-->
     <nav aria-label="Page navigation example">

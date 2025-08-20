@@ -1,11 +1,14 @@
 package org.esfe.controladores;
 
+import org.esfe.modelos.Rol;
 import org.esfe.modelos.Usuario;
+import org.esfe.servicios.interfaces.IRolService;
 import org.esfe.servicios.interfaces.IUsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,9 +26,12 @@ public class UsuarioController {
     @Autowired
     private IUsuarioService usuarioService;
 
-    /**
-     * Model permitira pasar valores del controlador a la vista
-     */
+    @Autowired
+    private IRolService rolService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @GetMapping
     private String index(Model model,
                          @RequestParam("page") Optional<Integer> page,
@@ -58,12 +64,29 @@ public class UsuarioController {
 
     @PostMapping("/save")
     public String save(Usuario usuario, BindingResult result, Model model, RedirectAttributes attributes){
+
         if (result.hasErrors()){
             model.addAttribute(usuario);
             attributes.addFlashAttribute("error", "No se pudo guardar debido a un error.");
             return "usuario/create";
         }
 
+        /**
+         * Validar que el rol exista si se asignó uno
+         */
+        if (usuario.getRol() == null) {
+            Rol rol = rolService.buscarPorId(1)
+                    .orElseThrow(() -> new IllegalArgumentException("Rol no encontrado"));
+            usuario.setRol(rol);
+        } else {
+            attributes.addFlashAttribute("error", "Debe seleccionar un rol válido.");
+            return "usuario/create";
+        }
+
+        String password = passwordEncoder.encode(usuario.getClave());
+
+        usuario.setStatus(1);
+        usuario.setClave(password);
         usuarioService.crearOEditar(usuario);
         attributes.addFlashAttribute("msg", "Usuario creado correctamente.");
         return "redirect:/usuarios";
@@ -105,4 +128,5 @@ public class UsuarioController {
         attributes.addFlashAttribute("msg", "Usuario eliminado correctamente.");
         return "redirect:/usuarios";
     }
+    //@PutMapping para desactivar usuario y pasar a inactivo y en RolService poner metodo para modificar
 }
