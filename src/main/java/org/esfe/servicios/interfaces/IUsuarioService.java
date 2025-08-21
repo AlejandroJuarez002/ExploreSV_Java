@@ -17,4 +17,6 @@ public interface IUsuarioService {
     Usuario crearOEditar(Usuario usuario);
 
     void eliminarPorId(Integer id);
+
+    Page<Usuario> buscarPorStatus(int status, Pageable pageable);
 }

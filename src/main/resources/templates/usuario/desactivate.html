@@ -1,0 +1,19 @@
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="/layouts/_mainLayout">
+
+<div layout:fragment="content">
+  <h1>Confirmar Desactivación</h1>
+  <p>
+    ¿Está seguro que desea desactivar al usuario
+    <strong th:text="${usuario.nombre} + ' ' + ${usuario.apellido}"></strong>
+    con nombre de usuario <strong th:text="${usuario.nombreUsuario}"></strong>?
+  </p>
+
+  <form th:action="@{/usuarios/desactivate/{id}(id=${usuario.id})}" method="post">
+    <button type="submit" class="btn btn-warning">Desactivar</button>
+    <a th:href="@{/usuarios}" class="btn btn-secondary">Cancelar</a>
+  </form>
+</div>
+</html>

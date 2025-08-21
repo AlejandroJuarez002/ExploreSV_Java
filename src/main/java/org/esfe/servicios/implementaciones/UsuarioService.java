@@ -40,4 +40,9 @@ public class UsuarioService implements IUsuarioService {
     public void eliminarPorId(Integer id) {
         usuarioRepository.deleteById(id);
     }
+
+    @Override
+    public Page<Usuario> buscarPorStatus(int status, Pageable pageable){
+        return usuarioRepository.findByStatus(status, pageable);
+    }
 }

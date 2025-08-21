@@ -4,6 +4,10 @@
       layout:decorate="/layouts/_mainLayout">
 <div layout:fragment="content">
     <h1 class="text-center">Destinos Turísticos recientes.</h1>
+    <div sec:authorize="isAnonymous()" class="alert alert-danger text center" role="alert">
+        Debes iniciar sesion para utilizar la aplicacion.
+    </div>
+</div>
     <div class="row">
         <div class="col-md-4 mb-4" th:each="destino : ${destinoTuristicos}">
             <div class="card h-100 shadow-sm">
@@ -21,8 +25,3 @@
         </div>
     </div>
 </div>
-
-
-
-
-
