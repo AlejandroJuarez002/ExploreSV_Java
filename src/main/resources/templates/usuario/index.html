@@ -29,6 +29,8 @@
 
     <h1>Lista de Usuarios</h1>
     <a th:href="@{/usuarios/create}" class="btn btn-outline-primary">Nuevo Usuario</a>
+    <a th:href="@{/usuarios/inactive}" class="btn btn-outline-warning">Usuarios Desactivados</a>
+
     <div class="card mb-4">
         <table class="table table-striped">
             <thead>
@@ -53,7 +55,7 @@
                 <td>
                     <a th:href="@{/usuarios/details/{id} (id = ${item.id})}" class="btn btn-outline-secondary">Detalles</a>
                     <a th:href="@{/usuarios/edit/{id} (id = ${item.id})}" class="btn btn-outline-info">Editar</a>
-                    <a th:href="@{/usuarios/remove/{id} (id = ${item.id})}" class="btn btn-outline-danger">Eliminar</a>
+                    <a th:href="@{/usuarios/desactivate/{id}(id=${item.id})}" class="btn btn-outline-warning">Desactivar</a>
                 </td>
             </tr>
             </tbody>
