@@ -2,26 +2,31 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="/layouts/_mainLayout">
+
 <div layout:fragment="content">
     <h1 class="text-center">Destinos Turísticos recientes.</h1>
-    <div sec:authorize="isAnonymous()" class="alert alert-danger text center" role="alert">
-        Debes iniciar sesion para utilizar la aplicacion.
-    </div>
-</div>
     <div class="row">
         <div class="col-md-4 mb-4" th:each="destino : ${destinoTuristicos}">
             <div class="card h-100 shadow-sm">
-                <img
-                        th:if="${destino['imagenes'].size() > 0 and destino['imagenes'][0].base64Image != null}"
-                        th:src="'data:image/png;base64,' + ${destino['imagenes'][0].base64Image}"
-                        class="card-img-top"
-                        alt="Imagen destino"
-                        style="height: 200px; object-fit: cover;">
+                <a th:href="@{'/destinoTuristicos/details/' + ${destino['destino'].id}}">
+                    <img
+                            th:if="${destino['imagenes'].size() > 0 and destino['imagenes'][0].base64Image != null}"
+                            th:src="'data:image/png;base64,' + ${destino['imagenes'][0].base64Image}"
+                            class="card-img-top"
+                            alt="Imagen destino"
+                            style="height: 200px; object-fit: cover;">
+                </a>
                 <div class="card-body">
-                    <h5 class="card-title" th:text="${destino['destino'].nombre}"></h5>
+                    <h5 class="card-title">
+                        <a th:href="@{'/destinoTuristicos/details/' + ${destino['destino'].id}}"
+                           th:text="${destino['destino'].nombre}"
+                           style="text-decoration: none; color: inherit;">
+                        </a>
+                    </h5>
                     <p class="card-text" th:text="${destino['destino'].descripcion}"></p>
                 </div>
             </div>
         </div>
     </div>
 </div>
+</html>

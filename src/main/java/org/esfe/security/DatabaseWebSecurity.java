@@ -37,6 +37,8 @@ public class DatabaseWebSecurity {
                 .requestMatchers("/assets/**", "/css/**", "/js/**").permitAll()
                 //Las vistas publicas no requieren autenticacion
                 .requestMatchers("/", "/privacy", "/terms").permitAll()
+                // Rutas de destinos turísticos públicas (solo ver)
+                .requestMatchers("/destinoTuristicos", "/destinoTuristicos/details/**").permitAll()
                 //Todas las demas vistas requieren autenticacion
                 .anyRequest().authenticated());
         http.formLogin(form -> form.permitAll());
