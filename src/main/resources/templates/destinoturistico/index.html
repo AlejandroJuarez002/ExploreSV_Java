@@ -4,57 +4,66 @@
       layout:decorate="/layouts/_mainLayout">
 
 <div layout:fragment="content">
-        <div th:if="${msg != null}">
-            <script>
-                Swal.fire({
-                title: "Confirmacion",
+
+    <!-- Mensajes -->
+    <div th:if="${msg != null}">
+        <script>
+            Swal.fire({
+                title: "Confirmación",
                 text: '[[${msg}]]',
                 icon: "success"
-                });
-            </script>
-        </div>
+            });
+        </script>
+    </div>
     <div th:if="${error != null}">
         <script>
             Swal.fire({
                 title: "Error",
                 text: '[[${error}]]',
-                icon: "error'
-            })
+                icon: "error"
+            });
         </script>
     </div>
 
-    <h1>Destino turisticos</h1>
-    <a th:href="@{/destinoTuristicos/create}" class="btn btn-outline-primary">Nuevo destino</a>
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>Id</th>
-            <th>Nombre</th>
-            <th>Descripcion</th>
-            <th>Ubicacion</th>
-            <th>Horario</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="item : ${destinoTuristicos}">
-            <td th:text="${item.id}"></td>
-            <td th:text="${item.nombre}"></td>
-            <td th:text="${item.descripcion}"></td>
-            <td th:text="${item.ubicacion}"></td>
-            <td th:text="${item.horario}"></td>
-            <td>
-                <a th:href="@{/destinoTuristicos/details/{id} (id = ${item.id}) }" class="btn btn-outline-secondary">Detalles</a>
-                <a th:href="@{/destinoTuristicos/edit/{id} (id = ${item.id}) }" class="btn btn-outline-info">Editar</a>
-                <a th:href="@{/destinoTuristicos/remove/{id} (id = ${item.id}) }" class="btn btn-outline-danger">Eliminar</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <h1>Destinos turísticos</h1>
+    <a th:href="@{/destinoTuristicos/create}" class="btn btn-outline-primary mb-3">Nuevo destino</a>
 
-    <nav aria-label="Page navigation example">
-        <ul class="pagination">
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        <div class="col" th:each="item : ${destinoTuristicos}">
+            <div class="card h-100">
+                <!-- Imagen principal -->
+                <img th:if="${#lists.isEmpty(item.imagenes) == false}"
+                     th:src="'data:image/png;base64,' + ${item.imagenes[0].base64Image}"
+                     class="card-img-top" style="height:200px; object-fit: cover;" alt="Imagen destino">
+                <img th:if="${#lists.isEmpty(item.imagenes)}"
+                     src="/images/placeholder.png"
+                     class="card-img-top" style="height:200px; object-fit: cover;" alt="Imagen no disponible">
+
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${item.destino.nombre}">Nombre destino</h5>
+                    <p class="card-text" th:text="${item.destino.descripcion}">Descripción del destino...</p>
+                </div>
+
+                <div class="card-footer d-flex gap-1">
+                    <a th:href="@{/destinoTuristicos/details/{id}(id=${item.destino.id})}"
+                       class="btn btn-outline-secondary btn-sm">Detalles</a>
+                    <a th:href="@{/destinoTuristicos/edit/{id}(id=${item.destino.id})}"
+                       class="btn btn-outline-info btn-sm">Editar</a>
+                    <a th:href="@{/destinoTuristicos/remove/{id}(id=${item.destino.id})}"
+                       class="btn btn-outline-danger btn-sm"
+                       onclick="return confirm('¿Seguro que deseas eliminar este destino?');">Eliminar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Paginación -->
+    <nav aria-label="Page navigation example" class="mt-4">
+        <ul class="pagination justify-content-center">
             <li class="page-item" th:each="pageNumber : ${pageNumbers}">
-                <a class="page-link" th:href="@{|/destinoTuristicos?page=${pageNumber}|}" th:text="${pageNumber}"></a>
+                <a class="page-link"
+                   th:href="@{|/destinoTuristicos?page=${pageNumber}${q != null ? '&q=' + q : ''}|}"
+                   th:text="${pageNumber}"></a>
             </li>
         </ul>
     </nav>

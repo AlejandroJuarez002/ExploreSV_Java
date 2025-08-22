@@ -1,31 +1,48 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="/layouts/_mainLayout" xmlns="http://www.w3.org/1999/html">
+      layout:decorate="/layouts/_mainLayout" xmlns:sec="http://www.w3.org/1999/xhtml">
 
 <div layout:fragment="content">
-    <h1>Detalles del destino turistico</h1>
+    <h1 class="mb-4">Detalles del destino turístico</h1>
     <div>
-       <hr />
+        <hr />
         <dl class="row">
-        <dt class="col-sm-2">ID</dt>
-        <dd class="col-sm-10" th:text="${destinoTuristico.Id}"></dd>
+            <dt class="col-sm-2">ID</dt>
+            <dd class="col-sm-10" th:text="${destinoTuristico.id}"></dd>
 
-        <dt class="col-sm-2">Nombre</dt>
-        <dd class="col-sm-10" th:text="${destinoTuristico.nombre}"></dd>
+            <dt class="col-sm-2">Nombre</dt>
+            <dd class="col-sm-10" th:text="${destinoTuristico.nombre}"></dd>
 
-        <dt class="col-sm-2">Descripcion</dt>
-        <dd class="col-sm-10" th:text="${destinoTuristico.descripcion}"></dd>
+            <dt class="col-sm-2">Descripción</dt>
+            <dd class="col-sm-10" th:text="${destinoTuristico.descripcion}"></dd>
 
-        <dt class="col-sm-2">Ubicacion</dt>
-        <dd class="col-sm-10" th:text="${destinoTuristico.ubicacion}"></dd>
+            <dt class="col-sm-2">Ubicación</dt>
+            <dd class="col-sm-10" th:text="${destinoTuristico.ubicacion}"></dd>
 
-        <dt class="col-sm-2">Horario</dt>
-        <dd class="col-sm-10" th:text="${destinoTuristico.horario}"></dd>
+            <dt class="col-sm-2">Horario</dt>
+            <dd class="col-sm-10" th:text="${destinoTuristico.horario}"></dd>
+
+            <dt class="col-sm-2">Imágenes</dt>
+            <dd class="col-sm-10">
+                <div class="d-flex flex-wrap">
+                    <div th:each="img : ${destinoTuristico.imagenes}" class="p-1">
+                        <img th:if="${img.base64Image != null}"
+                             th:src="'data:image/png;base64,' + ${img.base64Image}"
+                             alt="Imagen destino"
+                             style="width:120px;height:120px;object-fit:cover;border-radius:5px;">
+                    </div>
+                </div>
+            </dd>
         </dl>
 
-        <a th:href="@{/destinoTuristicos/edit/{Id} (Id = ${destinoTuristico.Id}) }" class="btn btn-outline-info">Editar</a>
-        <a th:href="@{/destinoTuristicos}">Regresar</a>
+        <!-- Botones de acción -->
+        <div class="mt-3">
+            <a th:href="@{/destinoTuristicos/edit/{id}(id=${destinoTuristico.id})}"
+               class="btn btn-outline-info me-2"
+               sec:authorize="hasRole('ADMIN')">Editar</a>
+            <a th:href="@{/}" class="btn btn-secondary">Regresar</a>
+        </div>
     </div>
-
 </div>
+</html>

@@ -68,6 +68,7 @@ public class DestinoTuristico {
     public void setHorario(String horario) {
         this.horario = horario;
     }
+
     public List<Imagen> getImagenes() {
         return imagenes;
     }
