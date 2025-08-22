@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -118,17 +120,45 @@ public class UsuarioController {
     public String showDesactivateView(@PathVariable("id") Integer id, Model model) {
         Usuario usuario = usuarioService.buscarPorId(id)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+
+        // Usuario logeado
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+
+        Usuario usuarioLogeado = usuarioService.buscarPorNombreUsuario(username)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario logeado no encontrado"));
+
+        // Se agrega bandera si es el mismo
+        boolean esMismoUsuario = usuarioLogeado.getId().equals(usuario.getId());
+
         model.addAttribute("usuario", usuario);
-        return "usuario/desactivate"; // tu vista de confirmación
+        model.addAttribute("esMismoUsuario", esMismoUsuario);
+
+        return "usuario/desactivate";
     }
 
     @PostMapping("/desactivate/{id}")
     public String desactivate(@PathVariable("id") Integer id, RedirectAttributes attributes) {
-        Usuario usuario = usuarioService.buscarPorId(id)
+        // Obtiene el usuario autenticado desde Spring Security
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+
+        // Busca en base de datos el usuario logeado
+        Usuario usuarioLogeado = usuarioService.buscarPorNombreUsuario(username)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario logeado no encontrado"));
+
+        // Valida que no pueda desactivar el usuario logeado
+        if (usuarioLogeado.getId().equals(id)) {
+            attributes.addFlashAttribute("error", "No puedes desactivar tu propio usuario.");
+            return "redirect:/usuarios";
+        }
+
+        // Desactivación de otro usuario
+        Usuario usuarioADesactivar = usuarioService.buscarPorId(id)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
 
-        usuario.setStatus(0); // Se pasa a inactivo
-        usuarioService.crearOEditar(usuario); // Se guarda
+        usuarioADesactivar.setStatus(0); // Se pasa a inactivo
+        usuarioService.crearOEditar(usuarioADesactivar); // Se guarda
 
         attributes.addFlashAttribute("msg", "Usuario desactivado correctamente.");
         return "redirect:/usuarios"; // Redirige al listado de usuarios activos
