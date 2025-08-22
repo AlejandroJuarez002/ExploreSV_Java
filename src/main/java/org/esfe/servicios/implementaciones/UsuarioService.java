@@ -13,6 +13,7 @@ import java.util.Optional;
 
 @Service
 public class UsuarioService implements IUsuarioService {
+
     @Autowired
     private IUsuarioRepository usuarioRepository;
 
@@ -44,5 +45,10 @@ public class UsuarioService implements IUsuarioService {
     @Override
     public Page<Usuario> buscarPorStatus(int status, Pageable pageable){
         return usuarioRepository.findByStatus(status, pageable);
+    }
+
+    @Override
+    public Optional<Usuario> buscarPorNombreUsuario(String nombreUsuario) {
+        return usuarioRepository.findByNombreUsuario(nombreUsuario);
     }
 }
