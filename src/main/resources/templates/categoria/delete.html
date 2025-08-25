@@ -1,25 +1,126 @@
-<html lang="en"
+<html lang="es"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="/layouts/_mainLayout">
 
-<div layout:fragment="content">
-  <h1>Eliminar categoría</h1>
-  <h3>¿Está seguro que desea eliminar este registro?</h3>
-  <div>
-    <hr />
-    <dl class="row">
-      <dt class="col-sm-2">ID</dt>
-      <dd class="col-sm-10" th:text="${categoria.id}"></dd>
+<head>
+  <!-- Fuente elegante -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        margin: 0;
+        overflow: hidden;
+    }
 
-      <dt class="col-sm-2">Nombre</dt>
-      <dd class="col-sm-10" th:text="${categoria.nombre}"></dd>
-    </dl>
+    /* Botones */
+    .btn-eliminar {
+        background-color: #dc3545;
+        color: #fff;
+        border: none;
+        transition: 0.3s ease;
+    }
+    .btn-eliminar:hover {
+        background-color: #bb2d3b;
+    }
 
-    <form th:action="@{/categorias/delete}" method="post">
-      <input type="hidden" name="id" th:value="${categoria.id}">
-      <input type="submit" value="Eliminar" class="btn btn-danger">
-      <a th:href="@{/categorias}">Regresar</a>
-    </form>
+    .btn-regresar {
+        background-color: #6c757d;
+        color: #fff;
+        border: none;
+        transition: 0.3s ease;
+    }
+    .btn-regresar:hover {
+        background-color: #5a6268;
+    }
+
+    /* Estilo detalles */
+    .detalle-box {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 0.75rem;
+        padding: 1rem 1.5rem;
+        margin: 1rem 0;
+    }
+
+    .detalle-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .detalle-item:last-child {
+        border-bottom: none;
+    }
+
+    .detalle-label {
+        font-weight: 600;
+        color: #495057;
+    }
+
+    .detalle-value {
+        color: #212529;
+    }
+  </style>
+</head>
+
+<div layout:fragment="content"
+     class="container-fluid min-vh-100 d-flex align-items-center justify-content-center overflow-hidden"
+     th:style="'background: url(' + @{/assets/img/fondo1.png} + ') no-repeat center center fixed;
+                background-size: cover; position: relative;'">
+
+  <!-- Capa translúcida -->
+  <div style="position: absolute; top:0; left:0; width:100%; height:100%;
+                background-color: rgba(255,255,255,0.7);"></div>
+
+  <!-- Contenido -->
+  <div class="row justify-content-center w-100 position-relative">
+    <div class="col-lg-6 col-md-8">
+
+      <!-- Card -->
+      <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-header text-center text-white"
+             style="background: linear-gradient(90deg, #dc3545, #ff6b6b);
+                            border-top-left-radius: 1rem; border-top-right-radius: 1rem;">
+          <h4 class="mb-0 fw-semibold">⚠️ Eliminar Categoría</h4>
+        </div>
+
+        <div class="card-body p-4 text-center" style="background-color: #ffffff;">
+          <h5 class="text-secondary fw-semibold mb-4">
+            ¿Está seguro que desea eliminar este registro?
+          </h5>
+
+          <!-- Detalles bonitos -->
+          <div class="detalle-box text-start shadow-sm">
+            <div class="detalle-item">
+              <span class="detalle-label">🔑 ID:</span>
+              <span class="detalle-value" th:text="${categoria.id}"></span>
+            </div>
+            <div class="detalle-item">
+              <span class="detalle-label">🏷️ Nombre:</span>
+              <span class="detalle-value" th:text="${categoria.nombre}"></span>
+            </div>
+          </div>
+
+          <hr class="my-4">
+
+          <!-- Botones -->
+          <form th:action="@{/categorias/delete}" method="post" class="d-flex justify-content-between">
+            <input type="hidden" name="id" th:value="${categoria.id}">
+            <a th:href="@{/categorias}"
+               class="btn btn-regresar px-4 py-2 rounded-3 shadow-sm">
+              ⬅ Regresar
+            </a>
+            <button type="submit"
+                    class="btn btn-eliminar px-4 py-2 rounded-3 shadow-sm">
+              🗑 Eliminar
+            </button>
+          </form>
+        </div>
+      </div>
+
+    </div>
   </div>
 </div>
+
