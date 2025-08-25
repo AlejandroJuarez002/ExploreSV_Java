@@ -18,7 +18,7 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="nombre">Nombre</label>
-                    <input type="text" class="form-control" th:field="*{nombre}" id="nombre" placeholder="Nombre del destino" required>
+                    <input type="text" class="form-control" th:field="*{nombre}" id="nombre" placeholder="Nombre del destino" maxlength="100" required>
                 </div>
             </div>
         </div>
@@ -28,7 +28,7 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="descripcion">Descripción</label>
-                    <textarea class="form-control" th:field="*{descripcion}" id="descripcion" cols="12" rows="3" required></textarea>
+                    <textarea class="form-control" th:field="*{descripcion}" id="descripcion" cols="12" rows="3" maxlength="2500" required></textarea>
                 </div>
             </div>
         </div>
@@ -38,7 +38,7 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="ubicacion">Ubicación</label>
-                    <textarea class="form-control" th:field="*{ubicacion}" id="ubicacion" cols="12" rows="3" required></textarea>
+                    <textarea class="form-control" th:field="*{ubicacion}" id="ubicacion" cols="12" rows="3" maxlength="300" required></textarea>
                 </div>
             </div>
         </div>
@@ -48,10 +48,29 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="horario">Horario</label>
-                    <textarea class="form-control" th:field="*{horario}" id="horario" cols="12" rows="3" required></textarea>
+                    <textarea class="form-control" th:field="*{horario}" id="horario" cols="12" rows="3" maxlength="100" required></textarea>
                 </div>
             </div>
         </div>
+
+        <select class="form-control" th:field="*{departamento}" id="departamento" required>
+            <option value="">Selecciona un departamento</option>
+            <option th:each="depto : ${departamentos}"
+                    th:value="${depto.id}"
+                    th:text="${depto.nombre}"
+                    th:selected="${depto.id eq destinoTuristico.departamento?.id}">
+            </option>
+        </select>
+
+        <!-- Categoría -->
+        <select class="form-control" th:field="*{categoria}" id="categoria" required>
+            <option value="">Selecciona una categoría</option>
+            <option th:each="cat : ${categorias}"
+                    th:value="${cat.id}"
+                    th:text="${cat.nombre}"
+                    th:selected="${cat.id eq destinoTuristico.categoria?.id}">
+            </option>
+        </select>
 
         <!-- Imágenes actuales -->
         <div class="form-group mt-3">
@@ -65,6 +84,8 @@
                 </div>
             </div>
         </div>
+
+
 
         <!-- Subir nuevas imágenes -->
         <div class="form-group mt-3">
