@@ -36,7 +36,7 @@ public class DatabaseWebSecurity {
                 //Aperturar el acceso a los recursos estaticos
                 .requestMatchers("/assets/**", "/css/**", "/js/**").permitAll()
                 //Las vistas publicas no requieren autenticacion
-                .requestMatchers("/", "/privacy", "/terms").permitAll()
+                .requestMatchers("/", "/home", "/home/**", "/privacy", "/terms").permitAll()
                 // Rutas de destinos turísticos públicas (solo ver)
                 .requestMatchers("/destinoTuristicos", "/destinoTuristicos/details/**").permitAll()
                 //Todas las demas vistas requieren autenticacion
