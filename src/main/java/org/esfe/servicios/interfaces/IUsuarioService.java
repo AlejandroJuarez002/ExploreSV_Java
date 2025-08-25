@@ -19,4 +19,6 @@ public interface IUsuarioService {
     void eliminarPorId(Integer id);
 
     Page<Usuario> buscarPorStatus(int status, Pageable pageable);
+
+    Optional<Usuario> buscarPorNombreUsuario(String nombreUsuario);
 }

@@ -5,15 +5,25 @@
 
 <div layout:fragment="content">
   <h1>Confirmar Desactivación</h1>
+
   <p>
     ¿Está seguro que desea desactivar al usuario
     <strong th:text="${usuario.nombre} + ' ' + ${usuario.apellido}"></strong>
     con nombre de usuario <strong th:text="${usuario.nombreUsuario}"></strong>?
   </p>
 
-  <form th:action="@{/usuarios/desactivate/{id}(id=${usuario.id})}" method="post">
+  <!-- Si es el mismo usuario logeado -->
+  <div th:if="${esMismoUsuario}" class="alert alert-danger" role="alert">
+    No puedes desactivar el usuario con el que has iniciado sesión actualmente.
+  </div>
+
+  <!-- Si NO es el mismo usuario, mostrar formulario -->
+  <form th:if="${!esMismoUsuario}"
+        th:action="@{/usuarios/desactivate/{id}(id=${usuario.id})}"
+        method="post">
     <button type="submit" class="btn btn-warning">Desactivar</button>
-    <a th:href="@{/usuarios}" class="btn btn-secondary">Cancelar</a>
   </form>
+
+  <a th:href="@{/usuarios}" class="btn btn-secondary mt-2">Regresar</a>
 </div>
 </html>
