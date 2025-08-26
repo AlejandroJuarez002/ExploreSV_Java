@@ -2,11 +2,9 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="/layouts/_mainLayout">
-
 <div layout:fragment="content">
     <h1>Editar Usuario</h1>
-    <form th:action="@{/usuarios/save}" th:object="${usuario}" method="post">
-
+    <form th:action="@{/usuarios/save}" th:object="${usuario}" method="post" onsubmit="return validarFormulario()">
         <input type="hidden" th:field="*{id}">
         <div class="row">
             <div class="col-md-6">
@@ -16,7 +14,6 @@
                 </div>
             </div>
         </div>
-
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
@@ -25,7 +22,6 @@
                 </div>
             </div>
         </div>
-
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
@@ -34,12 +30,19 @@
                 </div>
             </div>
         </div>
-
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="cambiarClave" onclick="toggleClave()">
+                    <label class="form-check-label" for="cambiarClave">Cambiar contraseña</label>
+                </div>
+            </div>
+        </div>
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label for="clave">Contraseña</label>
-                    <input type="password" class="form-control" th:field="*{clave}" id="clave" placeholder="Escriba su contraseña por favor." required>
+                    <label for="clave">Nueva Contraseña</label>
+                    <input type="password" class="form-control" th:field="*{clave}" id="clave" placeholder="Escriba su nueva contraseña por favor." disabled>
                 </div>
             </div>
         </div>
@@ -47,4 +50,26 @@
         <button type="submit" class="btn btn-primary">Guardar Cambios</button>
         <a th:href="@{/usuarios}">Regresar</a>
     </form>
+
+    <script>
+        function toggleClave() {
+            const cambiarClave = document.getElementById('cambiarClave');
+            const claveInput = document.getElementById('clave');
+            claveInput.disabled = !cambiarClave.checked;
+            if (!cambiarClave.checked) {
+                claveInput.value = '';
+            }
+        }
+
+        function validarFormulario() {
+            const cambiarClave = document.getElementById('cambiarClave');
+            const claveInput = document.getElementById('clave');
+            if (cambiarClave.checked && claveInput.value.trim() === '') {
+                alert('Debe ingresar una nueva contraseña si marcó la opción de cambiarla.');
+                return false;
+            }
+            return true;
+        }
+    </script>
 </div>
+</html>

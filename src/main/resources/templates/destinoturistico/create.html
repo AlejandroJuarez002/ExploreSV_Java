@@ -1,45 +1,187 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="/layouts/_mainLayout" xmlns="http://www.w3.org/1999/html">
+      layout:decorate="/layouts/_mainLayout">
 
 <div layout:fragment="content">
-    <h1>Crear nuevo destinoturistico</h1>
-    <form th:action="@{/destinoTuristicos/save}" th:object="${destinoTuristico}" method="post">
+    <h1>Crear nuevo destino turístico</h1>
+    <form id="destinoForm"
+          th:action="@{/destinoTuristicos/save}"
+          th:object="${destinoTuristico}"
+          method="post"
+          enctype="multipart/form-data">
+
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="nombre">Nombre</label>
-                    <input type="text" class="form-control" th:field="*{nombre}" id="nombre" placeholder="Nombre del destino turistico" required>
+                    <input type="text" class="form-control"
+                           th:field="*{nombre}" id="nombre"
+                           placeholder="Nombre del destino turístico"
+                           maxlength="100" required>
                 </div>
             </div>
         </div>
+
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label for="descripcion">Descripcion</label>
-                    <textarea class="form-control" th:field="*{descripcion}" id="descripcion" cols="12" rows="3" required></textarea>
+                    <label for="descripcion">Descripción</label>
+                    <textarea class="form-control"
+                              th:field="*{descripcion}" id="descripcion"
+                              cols="12" rows="3" maxlength="2500" required></textarea>
                 </div>
             </div>
         </div>
+
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label for="ubicacion">Ubicacion</label>
-                    <textarea class="form-control" th:field="*{ubicacion}" id="ubicacion" cols="12" rows="3" required></textarea>
+                    <label for="ubicacion">Ubicación</label>
+                    <textarea class="form-control"
+                              th:field="*{ubicacion}" id="ubicacion"
+                              cols="12" rows="3" maxlength="300" required></textarea>
                 </div>
             </div>
         </div>
+
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="horario">Horario</label>
-                    <textarea class="form-control" th:field="*{horario}" id="horario" cols="12" rows="3" required></textarea>
+                    <textarea class="form-control"
+                              th:field="*{horario}" id="horario"
+                              cols="12" rows="3" maxlength="100" required></textarea>
                 </div>
             </div>
         </div>
+
+        <!-- Menú desplegable para Departamentos -->
+        <label for="departamento">Departamento:</label>
+        <select id="departamento" th:field="*{departamento}" required>
+            <option value="">Selecciona un departamento</option>
+            <option th:each="departamento : ${departamentos}"
+                    th:value="${departamento.id}"
+                    th:text="${departamento.nombre}">
+            </option>
+        </select>
+
+        <!-- Menú desplegable para Categorías -->
+        <label for="categoria">Categoría:</label>
+        <select id="categoria" th:field="*{categoria}" required>
+            <option value="">Selecciona una categoría</option>
+            <option th:each="categoria : ${categorias}"
+                    th:value="${categoria.id}"
+                    th:text="${categoria.nombre}">
+            </option>
+        </select>
+
+        <!-- Subida de imágenes -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="imagenFiles">Imágenes del destino</label>
+                    <input type="file" id="imagenFiles"
+                           accept="image/*"
+                           class="form-control"
+                           multiple>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vista previa -->
+        <div id="preview" class="d-flex flex-wrap mt-3"></div>
+
         <hr>
         <button type="submit" class="btn btn-primary">Guardar</button>
-        <a th:href="@{/destinoTuristicos}">Regresar</a>
+        <a th:href="@{/destinoTuristicos}" class="btn btn-secondary">Regresar</a>
     </form>
+
+    <script>
+        let selectedFiles = [];
+
+        document.getElementById("imagenFiles").addEventListener("change", function (event) {
+            Array.from(event.target.files).forEach(file => {
+                // Evitar duplicados comparando nombre + tamaño
+                let exists = selectedFiles.some(f => f.name === file.name && f.size === file.size);
+                if (!exists && file.type.startsWith("image/")) {
+                    selectedFiles.push(file);
+                }
+            });
+
+            renderPreview();
+
+            // Limpio el input para permitir volver a elegir más
+            event.target.value = "";
+        });
+
+        function renderPreview() {
+            let preview = document.getElementById("preview");
+            preview.innerHTML = "";
+
+            selectedFiles.forEach((file, index) => {
+                let reader = new FileReader();
+                reader.onload = function (e) {
+                    let div = document.createElement("div");
+                    div.style.position = "relative";
+                    div.style.display = "inline-block";
+                    div.style.margin = "5px";
+
+                    let img = document.createElement("img");
+                    img.src = e.target.result;
+                    img.width = 120;
+                    img.style.border = "1px solid #ccc";
+                    img.style.borderRadius = "5px";
+                    img.style.objectFit = "cover";
+
+                    // Botón para eliminar imagen de la selección
+                    let btn = document.createElement("button");
+                    btn.innerHTML = "×";
+                    btn.type = "button";
+                    btn.style.position = "absolute";
+                    btn.style.top = "2px";
+                    btn.style.right = "2px";
+                    btn.style.background = "red";
+                    btn.style.color = "white";
+                    btn.style.border = "none";
+                    btn.style.borderRadius = "50%";
+                    btn.style.width = "22px";
+                    btn.style.height = "22px";
+                    btn.style.cursor = "pointer";
+
+                    btn.onclick = function () {
+                        selectedFiles.splice(index, 1);
+                        renderPreview();
+                    };
+
+                    div.appendChild(img);
+                    div.appendChild(btn);
+                    preview.appendChild(div);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Al enviar, agregamos todas las imágenes seleccionadas al FormData
+        document.getElementById("destinoForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            let formData = new FormData(this);
+
+            selectedFiles.forEach(file => {
+                formData.append("imagenFiles", file);
+            });
+
+            fetch(this.action, {
+                method: this.method,
+                body: formData
+            }).then(response => {
+                if (response.ok) {
+                    window.location.href = "/destinoTuristicos";
+                } else {
+                    alert("Error al guardar el destino");
+                }
+            });
+        });
+    </script>
 </div>

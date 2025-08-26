@@ -1,0 +1,18 @@
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="/layouts/_mainLayout">
+
+<div layout:fragment="content">
+    <h1>Confirmar Reactivación</h1>
+    <p>
+        ¿Está seguro que desea reactivar al usuario
+        <strong th:text="${usuario.nombre} + ' ' + ${usuario.apellido}"></strong>?
+    </p>
+
+    <form th:action="@{/usuarios/activate/{id}(id=${usuario.id})}" method="post">
+        <button type="submit" class="btn btn-success">Reactivar</button>
+        <a th:href="@{/usuarios/inactive}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+</html>
