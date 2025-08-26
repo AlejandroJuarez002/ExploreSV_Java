@@ -5,6 +5,8 @@ import org.esfe.modelos.DestinoTuristico;
 import org.esfe.modelos.Imagen;
 import org.esfe.modelos.ImagenDTO;
 import org.esfe.repositorios.IDestinoTuristicoRepository;
+import org.esfe.servicios.interfaces.ICategoriaService;
+import org.esfe.servicios.interfaces.IDepartamentoService;
 import org.esfe.servicios.interfaces.IDestinoTuristicoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
@@ -34,6 +36,12 @@ public class DestinoTuristicoController {
     @Autowired
     private IDestinoTuristicoRepository destinoTuristicoRepository;
 
+    @Autowired
+    private IDepartamentoService departamentoServicio; // Asegúrate de tener este servicio
+
+    @Autowired
+    private ICategoriaService categoriaServicio; // Asegúrate de tener este servicio
+
     @GetMapping
     public String index(Model model,
                         @RequestParam("page") Optional<Integer> page,
@@ -41,7 +49,7 @@ public class DestinoTuristicoController {
                         @RequestParam(value = "q", required = false) String q) {
 
         int currentPage = page.orElse(1) - 1;
-        int pageSize = size.orElse(5);
+        int pageSize = size.orElse(10);
         Pageable pageable = PageRequest.of(currentPage, pageSize);
 
         Page<DestinoTuristico> destinos;
@@ -82,8 +90,11 @@ public class DestinoTuristicoController {
     }
 
     @GetMapping("/create")
-    public String create(DestinoTuristico destinoTuristico) {
+    public String create(DestinoTuristico destinoTuristico, Model model) {
+        model.addAttribute("departamentos", departamentoServicio.obtenerTodos());
+        model.addAttribute("categorias", categoriaServicio.obtenerTodos());
         return "destinoTuristico/create";
+
     }
 
     @PostMapping("/save")
@@ -122,16 +133,39 @@ public class DestinoTuristicoController {
     }
 
     @GetMapping("/details/{Id}")
-    public String details(@PathVariable("Id") Integer Id, Model model){
-        DestinoTuristico destinoTuristico = destinoTuristicoService.buscarPorId (Id).get();
-        model.addAttribute ( "destinoTuristico", destinoTuristico);
+    public String details(@PathVariable("Id") Integer Id, Model model) {
+        DestinoTuristico destinoTuristico = destinoTuristicoService.buscarPorId(Id)
+                .orElseThrow(() -> new IllegalArgumentException("Destino no encontrado"));
+
+        // Forzar la carga de las relaciones
+        if (destinoTuristico.getDepartamento() != null) {
+            destinoTuristico.getDepartamento().getNombre();
+        }
+        if (destinoTuristico.getCategoria() != null) {
+            destinoTuristico.getCategoria().getNombre();
+        }
+
+        model.addAttribute("destinoTuristico", destinoTuristico);
         return "destinoTuristico/details";
     }
 
     @GetMapping("/edit/{Id}")
-    public String edit(@PathVariable("Id") Integer Id, Model model){
-        DestinoTuristico destinoTuristico = destinoTuristicoService.buscarPorId (Id).get();
-        model.addAttribute ("destinoTuristico", destinoTuristico);
+    public String edit(@PathVariable("Id") Integer Id, Model model) {
+        DestinoTuristico destinoTuristico = destinoTuristicoService.buscarPorId(Id)
+                .orElseThrow(() -> new IllegalArgumentException("Destino no encontrado"));
+
+        // Forzar la carga de las relaciones
+        if (destinoTuristico.getDepartamento() != null) {
+            destinoTuristico.getDepartamento().getNombre();
+        }
+        if (destinoTuristico.getCategoria() != null) {
+            destinoTuristico.getCategoria().getNombre();
+        }
+
+        model.addAttribute("departamentos", departamentoServicio.obtenerTodos());
+        model.addAttribute("categorias", categoriaServicio.obtenerTodos());
+        model.addAttribute("destinoTuristico", destinoTuristico);
+
         return "destinoTuristico/edit";
     }
 

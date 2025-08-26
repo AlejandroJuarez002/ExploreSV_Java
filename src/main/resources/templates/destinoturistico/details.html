@@ -8,20 +8,27 @@
     <div>
         <hr />
         <dl class="row">
-            <dt class="col-sm-2">ID</dt>
-            <dd class="col-sm-10" th:text="${destinoTuristico.id}"></dd>
+
 
             <dt class="col-sm-2">Nombre</dt>
             <dd class="col-sm-10" th:text="${destinoTuristico.nombre}"></dd>
 
             <dt class="col-sm-2">Descripción</dt>
-            <dd class="col-sm-10" th:text="${destinoTuristico.descripcion}"></dd>
+            <dd class="col-sm-10" style="white-space: pre-wrap;" th:text="${destinoTuristico.descripcion}"></dd>
 
             <dt class="col-sm-2">Ubicación</dt>
             <dd class="col-sm-10" th:text="${destinoTuristico.ubicacion}"></dd>
 
             <dt class="col-sm-2">Horario</dt>
             <dd class="col-sm-10" th:text="${destinoTuristico.horario}"></dd>
+
+            <!-- Departamento -->
+            <dt class="col-sm-2">Departamento</dt>
+            <dd class="col-sm-10" th:text="${destinoTuristico.departamento.nombre}"></dd>
+
+            <!-- Categoría -->
+            <dt class="col-sm-2">Categoría</dt>
+            <dd class="col-sm-10" th:text="${destinoTuristico.categoria.nombre}"></dd>
 
             <dt class="col-sm-2">Imágenes</dt>
             <dd class="col-sm-10">

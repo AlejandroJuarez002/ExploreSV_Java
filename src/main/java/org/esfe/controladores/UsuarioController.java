@@ -25,6 +25,7 @@ import java.util.stream.IntStream;
 @Controller
 @RequestMapping("/usuarios")
 public class UsuarioController {
+
     @Autowired
     private IUsuarioService usuarioService;
 
@@ -38,13 +39,11 @@ public class UsuarioController {
     private String index(Model model,
                          @RequestParam("page") Optional<Integer> page,
                          @RequestParam("size") Optional<Integer> size) {
-        int currentPage = page.orElse(1) - 1; //Si no esta seteado se asigna 0
-        int pageSize = size.orElse(5); //Tamaño de la pagina, se asigna 5
+        int currentPage = page.orElse(1) - 1;
+        int pageSize = size.orElse(5);
         Pageable pageable = PageRequest.of(currentPage, pageSize);
-
-        Page<Usuario> usuarios = usuarioService.buscarPorStatus(1, pageable); //Solo usuarios activos
+        Page<Usuario> usuarios = usuarioService.buscarPorStatus(1, pageable);
         model.addAttribute("usuarios", usuarios);
-
         int totalPages = usuarios.getTotalPages();
         if (totalPages > 0) {
             List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
@@ -55,47 +54,66 @@ public class UsuarioController {
         return "usuario/index";
     }
 
-    /**
-     * Accion CREATE
-     */
     @GetMapping("/create")
     public String create(Usuario usuario) {
         return "usuario/create";
     }
 
     @PostMapping("/save")
-    public String save(Usuario usuario, BindingResult result, Model model, RedirectAttributes attributes) {
-
+    public String save(
+            @ModelAttribute Usuario usuario,
+            BindingResult result,
+            Model model,
+            RedirectAttributes attributes,
+            @RequestParam(required = false) String cambiarClave
+    ) {
         if (result.hasErrors()) {
             model.addAttribute(usuario);
             attributes.addFlashAttribute("error", "No se pudo guardar debido a un error.");
-            return "usuario/create";
+            return usuario.getId() == null ? "usuario/create" : "usuario/edit";
         }
 
-        /**
-         * Validar que el rol exista si se asignó uno
-         */
         if (usuario.getRol() == null) {
             Rol rol = rolService.buscarPorId(1)
                     .orElseThrow(() -> new IllegalArgumentException("Rol no encontrado"));
             usuario.setRol(rol);
-        } else {
-            attributes.addFlashAttribute("error", "Debe seleccionar un rol válido.");
-            return "usuario/create";
         }
 
-        String password = passwordEncoder.encode(usuario.getClave());
+        // Si el checkbox está marcado, validar que la contraseña no esté vacía y sea diferente a la anterior
+        if (cambiarClave != null && !cambiarClave.isEmpty()) {
+            if (usuario.getClave() == null || usuario.getClave().trim().isEmpty()) {
+                attributes.addFlashAttribute("error", "Debe ingresar una nueva contraseña.");
+                return "redirect:/usuarios/edit/" + usuario.getId();
+            }
+            Usuario usuarioExistente = usuarioService.buscarPorId(usuario.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+            if (passwordEncoder.matches(usuario.getClave(), usuarioExistente.getClave())) {
+                attributes.addFlashAttribute("error", "La nueva contraseña debe ser diferente a la anterior.");
+                return "redirect:/usuarios/edit/" + usuario.getId();
+            }
+            String password = passwordEncoder.encode(usuario.getClave());
+            usuario.setClave(password);
+        } else if (usuario.getId() != null) {
+            // Si no se cambia la contraseña, mantener la existente
+            Usuario usuarioExistente = usuarioService.buscarPorId(usuario.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+            usuario.setClave(usuarioExistente.getClave());
+        } else if (usuario.getId() == null && (usuario.getClave() == null || usuario.getClave().trim().isEmpty())) {
+            // Si es un nuevo usuario, la contraseña es obligatoria
+            attributes.addFlashAttribute("error", "La contraseña es obligatoria para nuevos usuarios.");
+            return "usuario/create";
+        } else if (usuario.getId() == null) {
+            // Si es un nuevo usuario, encriptar la contraseña
+            String password = passwordEncoder.encode(usuario.getClave());
+            usuario.setClave(password);
+        }
 
         usuario.setStatus(1);
-        usuario.setClave(password);
         usuarioService.crearOEditar(usuario);
-        attributes.addFlashAttribute("msg", "Usuario creado correctamente.");
+        attributes.addFlashAttribute("msg", usuario.getId() == null ? "Usuario creado correctamente." : "Usuario editado correctamente.");
         return "redirect:/usuarios";
     }
 
-    /**
-     * Accion DETAILS
-     */
     @GetMapping("/details/{id}")
     public String details(@PathVariable("id") Integer id, Model model) {
         Usuario usuario = usuarioService.buscarPorId(id).get();
@@ -103,9 +121,6 @@ public class UsuarioController {
         return "usuario/details";
     }
 
-    /**
-     * Accion EDIT
-     */
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable("id") Integer id, Model model) {
         Usuario usuario = usuarioService.buscarPorId(id).get();
@@ -113,60 +128,38 @@ public class UsuarioController {
         return "usuario/edit";
     }
 
-    /**
-     * Accion DESACTIVATE
-     */
     @GetMapping("/desactivate/{id}")
     public String showDesactivateView(@PathVariable("id") Integer id, Model model) {
         Usuario usuario = usuarioService.buscarPorId(id)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
-
-        // Usuario logeado
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
-
         Usuario usuarioLogeado = usuarioService.buscarPorNombreUsuario(username)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario logeado no encontrado"));
-
-        // Se agrega bandera si es el mismo
         boolean esMismoUsuario = usuarioLogeado.getId().equals(usuario.getId());
-
         model.addAttribute("usuario", usuario);
         model.addAttribute("esMismoUsuario", esMismoUsuario);
-
         return "usuario/desactivate";
     }
 
     @PostMapping("/desactivate/{id}")
     public String desactivate(@PathVariable("id") Integer id, RedirectAttributes attributes) {
-        // Obtiene el usuario autenticado desde Spring Security
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
-
-        // Busca en base de datos el usuario logeado
         Usuario usuarioLogeado = usuarioService.buscarPorNombreUsuario(username)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario logeado no encontrado"));
-
-        // Valida que no pueda desactivar el usuario logeado
         if (usuarioLogeado.getId().equals(id)) {
             attributes.addFlashAttribute("error", "No puedes desactivar tu propio usuario.");
             return "redirect:/usuarios";
         }
-
-        // Desactivación de otro usuario
         Usuario usuarioADesactivar = usuarioService.buscarPorId(id)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
-
-        usuarioADesactivar.setStatus(0); // Se pasa a inactivo
-        usuarioService.crearOEditar(usuarioADesactivar); // Se guarda
-
+        usuarioADesactivar.setStatus(0);
+        usuarioService.crearOEditar(usuarioADesactivar);
         attributes.addFlashAttribute("msg", "Usuario desactivado correctamente.");
-        return "redirect:/usuarios"; // Redirige al listado de usuarios activos
+        return "redirect:/usuarios";
     }
 
-    /**
-     * Accion REACTIVE USERS
-     */
     @GetMapping("/inactive")
     public String inactiveUsers(Model model,
                                 @RequestParam("page") Optional<Integer> page,
@@ -174,10 +167,8 @@ public class UsuarioController {
         int currentPage = page.orElse(1) - 1;
         int pageSize = size.orElse(5);
         Pageable pageable = PageRequest.of(currentPage, pageSize);
-
-        Page<Usuario> usuarios = usuarioService.buscarPorStatus(0, pageable); // status 0 = inactivos
+        Page<Usuario> usuarios = usuarioService.buscarPorStatus(0, pageable);
         model.addAttribute("usuarios", usuarios);
-
         int totalPages = usuarios.getTotalPages();
         if (totalPages > 0) {
             List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
@@ -185,8 +176,7 @@ public class UsuarioController {
                     .collect(Collectors.toList());
             model.addAttribute("pageNumbers", pageNumbers);
         }
-
-        return "usuario/inactive_index"; // la vista para listar usuarios inactivos
+        return "usuario/inactive_index";
     }
 
     @GetMapping("/activate/{id}")
@@ -194,18 +184,16 @@ public class UsuarioController {
         Usuario usuario = usuarioService.buscarPorId(id)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
         model.addAttribute("usuario", usuario);
-        return "usuario/activate"; // vista de confirmación de reactivación
+        return "usuario/activate";
     }
 
     @PostMapping("/activate/{id}")
     public String activate(@PathVariable("id") Integer id, RedirectAttributes attributes) {
         Usuario usuario = usuarioService.buscarPorId(id)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
-
-        usuario.setStatus(1); // Se pasa a activo
-        usuarioService.crearOEditar(usuario); // Se guarda
-
+        usuario.setStatus(1);
+        usuarioService.crearOEditar(usuario);
         attributes.addFlashAttribute("msg", "Usuario reactivado correctamente.");
-        return "redirect:/usuarios/inactive"; // Vuelve al listado de inactivos
+        return "redirect:/usuarios/inactive";
     }
 }

@@ -17,7 +17,8 @@
                     <label for="nombre">Nombre</label>
                     <input type="text" class="form-control"
                            th:field="*{nombre}" id="nombre"
-                           placeholder="Nombre del destino turístico" required>
+                           placeholder="Nombre del destino turístico"
+                           maxlength="100" required>
                 </div>
             </div>
         </div>
@@ -28,7 +29,7 @@
                     <label for="descripcion">Descripción</label>
                     <textarea class="form-control"
                               th:field="*{descripcion}" id="descripcion"
-                              cols="12" rows="3" required></textarea>
+                              cols="12" rows="3" maxlength="2500" required></textarea>
                 </div>
             </div>
         </div>
@@ -39,7 +40,7 @@
                     <label for="ubicacion">Ubicación</label>
                     <textarea class="form-control"
                               th:field="*{ubicacion}" id="ubicacion"
-                              cols="12" rows="3" required></textarea>
+                              cols="12" rows="3" maxlength="300" required></textarea>
                 </div>
             </div>
         </div>
@@ -50,10 +51,30 @@
                     <label for="horario">Horario</label>
                     <textarea class="form-control"
                               th:field="*{horario}" id="horario"
-                              cols="12" rows="3" required></textarea>
+                              cols="12" rows="3" maxlength="100" required></textarea>
                 </div>
             </div>
         </div>
+
+        <!-- Menú desplegable para Departamentos -->
+        <label for="departamento">Departamento:</label>
+        <select id="departamento" th:field="*{departamento}" required>
+            <option value="">Selecciona un departamento</option>
+            <option th:each="departamento : ${departamentos}"
+                    th:value="${departamento.id}"
+                    th:text="${departamento.nombre}">
+            </option>
+        </select>
+
+        <!-- Menú desplegable para Categorías -->
+        <label for="categoria">Categoría:</label>
+        <select id="categoria" th:field="*{categoria}" required>
+            <option value="">Selecciona una categoría</option>
+            <option th:each="categoria : ${categorias}"
+                    th:value="${categoria.id}"
+                    th:text="${categoria.nombre}">
+            </option>
+        </select>
 
         <!-- Subida de imágenes -->
         <div class="row">
