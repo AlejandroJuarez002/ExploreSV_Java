@@ -1,7 +1,8 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="/layouts/_mainLayout" xmlns="http://www.w3.org/1999/html">
+      layout:decorate="/layouts/_mainLayout"
+      xmlns="http://www.w3.org/1999/html">
 
 <div layout:fragment="content">
     <h1>Editar destino</h1>
@@ -53,6 +54,7 @@
             </div>
         </div>
 
+        <!-- Departamento -->
         <select class="form-control" th:field="*{departamento}" id="departamento" required>
             <option value="">Selecciona un departamento</option>
             <option th:each="depto : ${departamentos}"
@@ -72,122 +74,123 @@
             </option>
         </select>
 
-        <!-- Imágenes actuales -->
+        <!-- Subir nuevas imágenes -->
+        <div class="form-group mt-3">
+            <label for="imagenFiles">Nuevas imágenes</label>
+            <input type="file" id="imagenFiles" name="imagenFiles" multiple class="form-control"/>
+        </div>
+
+        <!-- Previsualización de nuevas imágenes -->
+        <div class="form-group mt-2" id="previewContainer" style="display:flex; flex-wrap:wrap; gap:10px;"></div>
+
+        <!-- Imágenes actuales con opción de eliminar -->
         <div class="form-group mt-3">
             <label>Imágenes actuales</label>
             <div class="d-flex flex-wrap">
-                <div th:each="img : ${destinoTuristico.imagenes}" class="p-1">
+                <div th:each="img : ${destinoTuristico.imagenes}" class="p-2 text-center"
+                     style="position:relative; display:inline-block;">
+
+                    <!-- Imagen -->
                     <img th:if="${img.base64Image != null}"
                          th:src="'data:image/png;base64,' + ${img.base64Image}"
                          alt="Imagen destino"
-                         style="width:100px;height:100px;object-fit:cover;border-radius:5px;">
+                         style="width:100px;height:100px;object-fit:cover;border-radius:5px;display:block;margin:auto;">
+
+                    <!-- Botón "X" para marcar eliminación -->
+                    <button type="button"
+                            class="btn btn-sm btn-danger"
+                            style="position:absolute; top:2px; right:2px; border-radius:50%; padding:2px 6px; line-height:1;"
+                            onclick="toggleDelete(this)">
+                        ×
+                    </button>
+
+                    <!-- Checkbox oculto -->
+                    <input type="checkbox" name="deleteImages" th:value="${img.id}" style="display:none;">
                 </div>
             </div>
         </div>
 
-
-
-        <!-- Subir nuevas imágenes -->
+        <!-- Botones -->
         <div class="form-group mt-3">
-            <label for="imagenFiles">Nuevas imágenes</label>
-            <input type="file" id="imagenFiles" accept="image/*" multiple class="form-control">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <a th:href="@{/destinoTuristicos}" class="btn btn-secondary">Cancelar</a>
         </div>
-
-        <!-- Vista previa -->
-        <div id="preview" class="d-flex flex-wrap mt-3"></div>
-
-        <hr>
-        <button type="submit" class="btn btn-primary">Guardar cambios</button>
-        <a th:href="@{/destinoTuristicos}" class="btn btn-secondary">Regresar</a>
     </form>
 
     <script>
-        let selectedFiles = [];
+        // =============== IMÁGENES EXISTENTES (BD) ===============
+        function toggleDelete(btn) {
+            let container = btn.closest("div");
+            let checkbox = container.querySelector("input[type=checkbox]");
 
-        document.getElementById("imagenFiles").addEventListener("change", function (event) {
-            Array.from(event.target.files).forEach(file => {
-                // Evitar duplicados (nombre + tamaño)
-                let exists = selectedFiles.some(f => f.name === file.name && f.size === file.size);
-                if (!exists && file.type.startsWith("image/")) {
-                    selectedFiles.push(file);
-                }
-            });
-
-            renderPreview();
-
-            // Limpio el input para permitir volver a elegir más
-            event.target.value = "";
-        });
-
-        function renderPreview() {
-            let preview = document.getElementById("preview");
-            preview.innerHTML = "";
-
-            selectedFiles.forEach((file, index) => {
-                let reader = new FileReader();
-                reader.onload = function (e) {
-                    let div = document.createElement("div");
-                    div.style.position = "relative";
-                    div.style.display = "inline-block";
-                    div.style.margin = "5px";
-
-                    let img = document.createElement("img");
-                    img.src = e.target.result;
-                    img.width = 120;
-                    img.style.border = "1px solid #ccc";
-                    img.style.borderRadius = "5px";
-                    img.style.objectFit = "cover";
-
-                    // Botón para eliminar la imagen de la selección
-                    let btn = document.createElement("button");
-                    btn.innerHTML = "×";
-                    btn.type = "button";
-                    btn.style.position = "absolute";
-                    btn.style.top = "2px";
-                    btn.style.right = "2px";
-                    btn.style.background = "red";
-                    btn.style.color = "white";
-                    btn.style.border = "none";
-                    btn.style.borderRadius = "50%";
-                    btn.style.width = "22px";
-                    btn.style.height = "22px";
-                    btn.style.cursor = "pointer";
-
-                    btn.onclick = function () {
-                        selectedFiles.splice(index, 1);
-                        renderPreview();
-                    };
-
-                    div.appendChild(img);
-                    div.appendChild(btn);
-                    preview.appendChild(div);
-                };
-                reader.readAsDataURL(file);
-            });
+            if (checkbox.checked) {
+                checkbox.checked = false;
+                btn.classList.remove("btn-secondary");
+                btn.classList.add("btn-danger");
+            } else {
+                checkbox.checked = true;
+                btn.classList.remove("btn-danger");
+                btn.classList.add("btn-secondary");
+            }
         }
 
-        // Envío del formulario con las imágenes nuevas
-        document.getElementById("destinoForm").addEventListener("submit", function (e) {
-            e.preventDefault();
+        // =============== IMÁGENES NUEVAS (LOCALES) ===============
+        const inputFiles = document.getElementById('imagenFiles');
+        const previewContainer = document.getElementById('previewContainer');
 
-            let formData = new FormData(this);
+        inputFiles.addEventListener('change', function () {
+            Array.from(this.files).forEach((file) => {
+                const reader = new FileReader();
 
-            selectedFiles.forEach(file => {
-                formData.append("imagenFiles", file);
-            });
+                reader.onload = function (e) {
+                    // Crear contenedor de imagen con botón X
+                    const container = document.createElement('div');
+                    container.style.position = 'relative';
+                    container.style.display = 'inline-block';
 
-            fetch(this.action, {
-                method: this.method,
-                body: formData
-            }).then(response => {
-                if (response.ok) {
-                    window.location.href = "/destinoTuristicos";
-                } else {
-                    alert("Error al guardar los cambios");
-                }
+                    // Imagen
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.style.width = '100px';
+                    img.style.height = '100px';
+                    img.style.objectFit = 'cover';
+                    img.style.borderRadius = '5px';
+                    img.style.margin = '5px';
+
+                    // Botón X
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.innerHTML = '×';
+                    btn.className = 'btn btn-sm btn-danger';
+                    btn.style.position = 'absolute';
+                    btn.style.top = '2px';
+                    btn.style.right = '2px';
+                    btn.style.borderRadius = '50%';
+                    btn.style.padding = '2px 6px';
+                    btn.style.lineHeight = '1';
+
+                    // Evento eliminar SOLO para nuevas imágenes
+                    btn.onclick = () => {
+                        container.remove();
+
+                        // Quitar el archivo del input (reconstruimos el FileList)
+                        const dt = new DataTransfer();
+                        Array.from(inputFiles.files)
+                            .forEach(f => {
+                                if (f !== file) dt.items.add(f);
+                            });
+                        inputFiles.files = dt.files;
+                    };
+
+                    // Armar contenedor
+                    container.appendChild(img);
+                    container.appendChild(btn);
+                    previewContainer.appendChild(container);
+                };
+
+                reader.readAsDataURL(file);
             });
         });
     </script>
 </div>
-
-
+</html>

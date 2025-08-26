@@ -1,6 +1,5 @@
 package org.esfe.controladores;
 
-
 import org.esfe.modelos.DestinoTuristico;
 import org.esfe.modelos.Imagen;
 import org.esfe.modelos.ImagenDTO;
@@ -100,6 +99,7 @@ public class DestinoTuristicoController {
     @PostMapping("/save")
     public String save(@ModelAttribute DestinoTuristico destinoTuristico,
                        @RequestParam("imagenFiles") List<MultipartFile> imagenFiles,
+                       @RequestParam(value = "deleteImages", required = false) List<Integer> deleteImages,
                        BindingResult result,
                        Model model,
                        RedirectAttributes attributes) {
@@ -111,16 +111,39 @@ public class DestinoTuristicoController {
         }
 
         try {
-            List<Imagen> listaImagenes = new ArrayList<>();
+            List<Imagen> nuevasImagenes = new ArrayList<>();
+
+            // Procesar imágenes nuevas
             for (MultipartFile file : imagenFiles) {
                 if (!file.isEmpty()) {
                     Imagen img = new Imagen();
                     img.setBytesArrayImage(file.getBytes());
                     img.setDestinoTuristico(destinoTuristico);
-                    listaImagenes.add(img);
+                    nuevasImagenes.add(img);
                 }
             }
-            destinoTuristico.setImagenes(listaImagenes);
+
+            if (destinoTuristico.getId() != null) {
+                // Es edición → obtener el destino existente
+                DestinoTuristico existente = destinoTuristicoService.buscarPorId(destinoTuristico.getId())
+                        .orElseThrow(() -> new IllegalArgumentException("Destino no encontrado"));
+
+                List<Imagen> imagenesFinales = new ArrayList<>(existente.getImagenes());
+
+                // Eliminar imágenes marcadas
+                if (deleteImages != null && !deleteImages.isEmpty()) {
+                    imagenesFinales.removeIf(img -> deleteImages.contains(img.getId()));
+                }
+
+                // Agregar nuevas imágenes (si subieron)
+                imagenesFinales.addAll(nuevasImagenes);
+
+                destinoTuristico.setImagenes(imagenesFinales);
+
+            } else {
+                // Es creación → debe tener al menos las nuevas imágenes
+                destinoTuristico.setImagenes(nuevasImagenes);
+            }
 
         } catch (IOException e) {
             attributes.addFlashAttribute("error", "Error al procesar las imágenes.");
@@ -128,9 +151,10 @@ public class DestinoTuristicoController {
         }
 
         destinoTuristicoService.createOEdit(destinoTuristico);
-        attributes.addFlashAttribute("msg", "Destino turístico creado correctamente.");
+        attributes.addFlashAttribute("msg", "Destino turístico guardado correctamente.");
         return "redirect:/destinoTuristicos";
     }
+
 
     @GetMapping("/details/{Id}")
     public String details(@PathVariable("Id") Integer Id, Model model) {
@@ -190,5 +214,4 @@ public class DestinoTuristicoController {
         model.addAttribute("q", query);
         return "destinoTuristicos/index"; // usa la misma vista que el listado normal
     }
-
 }

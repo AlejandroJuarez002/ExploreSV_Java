@@ -14,4 +14,3 @@ public interface IDestinoTuristicoRepository extends JpaRepository<DestinoTurist
             String nombre, String descripcion, String ubicacion
     );
 }
-
