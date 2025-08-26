@@ -20,9 +20,12 @@ public class DatabaseWebSecurity {
     public UserDetailsManager customUsers(DataSource dataSource){
         JdbcUserDetailsManager users = new JdbcUserDetailsManager(dataSource);
         users.setUsersByUsernameQuery("select nombre_usuario, clave, status from usuarios where nombre_usuario = ?");
-        users.setAuthoritiesByUsernameQuery("select u.nombre_usuario, r.nombre from usuarios u " +
-                "inner join roles r on r.id = u.rol_id " +
-                "where u.nombre_usuario = ?");
+        users.setAuthoritiesByUsernameQuery(
+                "select u.nombre_usuario, concat('ROLE_', upper(r.nombre)) " +
+                        "from usuarios u " +
+                        "inner join roles r on r.id = u.rol_id " +
+                        "where u.nombre_usuario = ?"
+        );
 
         return users;
     }
