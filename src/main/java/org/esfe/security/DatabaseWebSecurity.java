@@ -41,7 +41,11 @@ public class DatabaseWebSecurity {
                 .requestMatchers("/destinoTuristicos", "/destinoTuristicos/details/**").permitAll()
                 //Todas las demas vistas requieren autenticacion
                 .anyRequest().authenticated());
-        http.formLogin(form -> form.permitAll());
+        http.formLogin(form -> form
+                .loginPage("/login")        // usa la vista personalizada
+                .defaultSuccessUrl("/", true) // a dónde redirige al loguearse
+                .permitAll()
+        );
 
         return http.build();
     }
