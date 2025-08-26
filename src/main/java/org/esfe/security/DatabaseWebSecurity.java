@@ -20,9 +20,12 @@ public class DatabaseWebSecurity {
     public UserDetailsManager customUsers(DataSource dataSource){
         JdbcUserDetailsManager users = new JdbcUserDetailsManager(dataSource);
         users.setUsersByUsernameQuery("select nombre_usuario, clave, status from usuarios where nombre_usuario = ?");
-        users.setAuthoritiesByUsernameQuery("select u.nombre_usuario, r.nombre from usuarios u " +
-                "inner join roles r on r.id = u.rol_id " +
-                "where u.nombre_usuario = ?");
+        users.setAuthoritiesByUsernameQuery(
+                "select u.nombre_usuario, concat('ROLE_', upper(r.nombre)) " +
+                        "from usuarios u " +
+                        "inner join roles r on r.id = u.rol_id " +
+                        "where u.nombre_usuario = ?"
+        );
 
         return users;
     }
@@ -31,20 +34,27 @@ public class DatabaseWebSecurity {
      * Configuracion de proteccion del contenido de la aplicacion
      */
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-        http.authorizeHttpRequests(authorize -> authorize
-                //Aperturar el acceso a los recursos estaticos
-                .requestMatchers("/assets/**", "/css/**", "/js/**").permitAll()
-                //Las vistas publicas no requieren autenticacion
-                .requestMatchers("/", "/home", "/home/**", "/privacy", "/terms").permitAll()
-                // Rutas de destinos turísticos públicas (solo ver)
-                .requestMatchers("/destinoTuristicos", "/destinoTuristicos/details/**").permitAll()
-                //Todas las demas vistas requieren autenticacion
-                .anyRequest().authenticated());
-        http.formLogin(form -> form.permitAll());
-
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/assets/**", "/css/**", "/js/**").permitAll()
+                        .requestMatchers("/", "/home", "/home/**", "/privacy", "/terms").permitAll()
+                        .requestMatchers("/destinoTuristicos", "/destinoTuristicos/details/**").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/", true)
+                        .permitAll()
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/")
+                        .permitAll()
+                );
         return http.build();
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder(){
