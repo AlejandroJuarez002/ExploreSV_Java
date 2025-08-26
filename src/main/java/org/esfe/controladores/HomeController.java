@@ -62,10 +62,6 @@ public class HomeController {
                     .collect(Collectors.toList());
             model.addAttribute("pageNumbers", pageNumbers);
         }
-
         return "home/index";
     }
-
-
-
 }
