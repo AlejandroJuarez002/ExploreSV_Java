@@ -2,7 +2,160 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="/layouts/_mainLayout">
+<head>
+    <style>
+/* Fondo general */
+body {
+    background: #f5f7fa;
+    font-family: "Poppins", sans-serif;
+    color: #333;
+}
 
+/* Títulos */
+h1 {
+    font-weight: 600;
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #2d3436;
+    text-align: center;
+}
+
+/* Botones */
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    padding: 6px 14px;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+}
+
+/* Botones específicos */
+.btn-outline-primary {
+    border-color: #007bff;
+    color: #007bff;
+}
+.btn-outline-primary:hover {
+    background: #007bff;
+    color: #fff;
+}
+
+.btn-outline-warning {
+    border-color: #f39c12;
+    color: #f39c12;
+}
+.btn-outline-warning:hover {
+    background: #f39c12;
+    color: #fff;
+}
+
+.btn-outline-info {
+    border-color: #17a2b8;
+    color: #17a2b8;
+}
+.btn-outline-info:hover {
+    background: #17a2b8;
+    color: #fff;
+}
+
+.btn-outline-secondary {
+    border-color: #6c757d;
+    color: #6c757d;
+}
+.btn-outline-secondary:hover {
+    background: #6c757d;
+    color: #fff;
+}
+
+/* Card */
+.card {
+    border-radius: 14px;
+    border: none;
+    box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    margin-top: 20px;
+}
+
+/* Tabla */
+.table {
+    margin-bottom: 0;
+    text-align: center;
+}
+
+.table th {
+    background: #007bff;
+    color: white;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    padding: 12px;
+    letter-spacing: 0.5px;
+}
+
+.table td {
+    padding: 12px;
+    vertical-align: middle;
+    font-size: 0.95rem;
+    color: #444;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background: #f9fbfd;
+}
+
+.table-striped tbody tr:hover {
+    background: #eef4fb;
+    cursor: pointer;
+}
+
+/* Estado activo/inactivo */
+.table td:nth-child(6) {
+    font-weight: 600;
+}
+.table td:contains("Activo") {
+    color: #27ae60;
+}
+.table td:contains("Inactivo") {
+    color: #e74c3c;
+}
+
+/* Paginación */
+.pagination {
+    justify-content: center;
+    margin-top: 25px;
+}
+
+.page-item .page-link {
+    border-radius: 8px;
+    margin: 0 4px;
+    color: #007bff;
+    border: 1px solid #dee2e6;
+    padding: 8px 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.page-item .page-link:hover {
+    background: #007bff;
+    color: #fff;
+    border-color: #007bff;
+}
+
+.page-item.active .page-link {
+    background: #007bff;
+    border-color: #007bff;
+    color: #fff;
+}
+
+/* SweetAlert ajustes (para coherencia de diseño) */
+.swal2-popup {
+    border-radius: 14px !important;
+    font-family: "Poppins", sans-serif;
+}
+    </style>
+</head>
 <div layout:fragment="content">
 
     <!--Mostrar mensaje de confirmacion en caso de exito-->

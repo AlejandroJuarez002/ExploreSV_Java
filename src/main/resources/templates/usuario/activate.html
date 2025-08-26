@@ -3,6 +3,99 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="/layouts/_mainLayout">
 
+<head>
+    <style>
+        /* Fondo general */
+        body {
+            background: #f5f7fa;
+            font-family: "Poppins", sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Título */
+        h1 {
+            font-weight: 600;
+            font-size: 2rem;
+            margin-bottom: 25px;
+            color: #2e7d32; /* Verde éxito */
+            text-align: center;
+        }
+
+        /* Párrafos */
+        p {
+            font-size: 1.05rem;
+            color: #2d3436;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Contenedor */
+        div[layout\\:fragment="content"] {
+            background: #fff;
+            border-radius: 14px;
+            padding: 25px 30px;
+            box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            margin: 50px auto;
+            text-align: center;
+        }
+
+        /* Botón Reactivar */
+        button.btn-success {
+            background: #43a047; /* Verde moderno */
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            padding: 10px 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            color: #fff;
+        }
+
+        button.btn-success:hover {
+            background: #2e7d32;
+            transform: translateY(-2px);
+            box-shadow: 0px 6px 14px rgba(0, 0, 0, 0.12);
+        }
+
+        /* Botón Cancelar */
+        a.btn-secondary {
+            display: inline-block;
+            margin-left: 12px;
+            border-radius: 8px;
+            font-weight: 500;
+            padding: 10px 20px;
+            text-decoration: none;
+            border: 1px solid #6c757d;
+            color: #6c757d;
+            transition: all 0.3s ease;
+        }
+
+        a.btn-secondary:hover {
+            background: #6c757d;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0px 6px 14px rgba(0, 0, 0, 0.12);
+        }
+
+        /* Responsividad */
+        @media (max-width: 768px) {
+            div[layout\\:fragment="content"] {
+                padding: 20px;
+                margin: 20px;
+            }
+            h1 {
+                font-size: 1.6rem;
+            }
+            p {
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+</head>
+
 <div layout:fragment="content">
     <h1>Confirmar Reactivación</h1>
     <p>

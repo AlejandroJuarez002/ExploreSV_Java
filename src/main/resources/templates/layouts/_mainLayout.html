@@ -11,13 +11,31 @@
     <link th:href="@{/css/styles.css}" rel="stylesheet" />
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetaler2@11"></script>
+
+    <style>
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        /* Color azul marino oscuro para el nav superior */
+        .sb-topnav.navbar-dark.bg-dark {
+            background-color: #0a2463 !important;
+        }
+    </style>
 </head>
 <body>
 <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+    <!-- Sidebar Toggle (solo visible si esta autenticado)-->
+    <div sec:authorize="isAuthenticated">
+        <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+    </div>
+
     <!-- Navbar Brand-->
     <a class="navbar-brand ps-3" th:href="@{/}">ExploreSV</a><!--#-->
-    <!-- Sidebar Toggle-->
-    <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+
     <!-- Navbar Search-->
     <form th:action="@{/destinoTuristicos}" method="get" class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
         <div class="input-group">
@@ -25,24 +43,22 @@
             <button class="btn btn-primary" id="btnNavbarSearch" type="submit"><i class="fas fa-search"></i></button>
         </div>
     </form>
+
     <!-- Navbar-->
     <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
-        <li class="nav-item dropdown">
+        <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
             <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                <div sec:authorize="isAnonymous()">
-                    <li><a class="dropdown-item" th:href="@{/login}">Login</a></li>
-                </div>
-                <li><hr class="dropdown-divider" /></li>
-                <div sec:authorize="isAuthenticated()">
-                    <li><a class="dropdown-item" th:href="@{/logout}">Logout</a></li>
-                </div>
+                    <li>
+                        <a class="dropdown-item" th:href="@{/logout}">Logout</a>
+                    </li>
             </ul>
         </li>
     </ul>
 </nav>
 <div id="layoutSidenav">
-    <div id="layoutSidenav_nav">
+    <!--Menú lateral (solo visible si está autenticado)-->
+    <div id="layoutSidenav_nav" sec:authorize="isAuthenticated()">
         <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
             <div class="sb-sidenav-menu">
                 <div class="nav">
@@ -90,11 +106,6 @@
             <div class="container-fluid px-4">
                 <div class="d-flex align-items-center justify-content-between small">
                     <div class="text-muted">Copyright &copy; ExploreSV - Sistema sobre Destinos Turisticos 2025</div>
-                    <div>
-                        <a href="#">Privacy Policy</a>
-                        &middot;
-                        <a href="#">Terms &amp; Conditions</a>
-                    </div>
                 </div>
             </div>
         </footer>
