@@ -37,7 +37,7 @@ public class DatabaseWebSecurity {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/assets/**", "/css/**", "/js/**").permitAll()
+                        .requestMatchers("/assets/**", "/css/**", "/js/**", "/img/**").permitAll()
                         .requestMatchers("/", "/home", "/home/**", "/privacy", "/terms").permitAll()
                         .requestMatchers("/destinoTuristicos", "/destinoTuristicos/details/**").permitAll()
                         .anyRequest().authenticated()

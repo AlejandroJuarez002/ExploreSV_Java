@@ -12,8 +12,11 @@
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-
     <style>
+        /* Importar fuentes de Google (Poppins) */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Playfair+Display:wght@600&display=swap');
+
+        /* Estilo general para tarjetas */
         .card {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
@@ -21,9 +24,81 @@
             transform: translateY(-5px) scale(1.02);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         }
-        /* Color azul marino oscuro para el nav superior */
+
+        /* Estilo premium para la navbar */
         .sb-topnav.navbar-dark.bg-dark {
             background-color: #0a2463 !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            padding: 0.8rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Estilo para el logo/brand (ExploreSV) */
+        .sb-topnav .navbar-brand {
+            font-family: 'Poppins', sans-serif; /* Cambiado a Poppins */
+            font-weight: 600;
+            font-size: 1.6rem;
+            color: #f8f9fa !important;
+            letter-spacing: 0.5px;
+        }
+
+        /* Estilo para el formulario de búsqueda */
+        .sb-topnav .form-inline {
+            margin-left: 1rem;
+        }
+        .sb-topnav .input-group {
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .sb-topnav .form-control {
+            background-color: rgba(255, 255, 255, 0.15);
+            border: none;
+            color: #fff;
+            padding: 0.5rem 1rem;
+            font-family: 'Poppins', sans-serif;
+        }
+        .sb-topnav .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+            font-family: 'Poppins', sans-serif;
+        }
+        .sb-topnav #btnNavbarSearch {
+            background-color: #3b7ddd;
+            border: none;
+            padding: 0.5rem 1rem;
+            color: #fff;
+            transition: background-color 0.3s ease;
+        }
+        .sb-topnav #btnNavbarSearch:hover {
+            background-color: #2a62c9;
+        }
+
+        /* Estilo para el icono del usuario */
+        .sb-topnav .nav-link.dropdown-toggle {
+            color: #f8f9fa !important;
+            font-size: 1.2rem;
+            margin-left: 0.75rem;
+        }
+
+        /* Estilo premium para el menú desplegable */
+        .dropdown-menu {
+            background-color: #ffffff;
+            border: none;
+            border-radius: 0.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 0.5rem 0;
+            min-width: 12rem;
+            font-family: 'Poppins', sans-serif;
+        }
+        .dropdown-menu .dropdown-item {
+            color: #2c3e50 !important;
+            font-size: 0.9rem;
+            padding: 0.5rem 1.25rem;
+            transition: all 0.2s ease;
+        }
+        .dropdown-menu .dropdown-item:hover {
+            background-color: #f0f4fc;
+            color: #0a2463 !important;
         }
     </style>
 </head>
@@ -71,19 +146,19 @@
                     <div sec:authorize="isAuthenticated()">
                         <div class="sb-sidenav-menu-heading">Opciones</div>
                         <a class="nav-link" th:href="@{/destinoTuristicos}">
-                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            <div class="sb-nav-link-icon"><i class="fas fa-mountain"></i></div>
                             Destinos Turísticos
                         </a>
                         <a class="nav-link" th:href="@{/categorias}">
-                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            <div class="sb-nav-link-icon"><i class="fas fa-tags"></i></div>
                             Categorias
                         </a>
                         <a class="nav-link" th:href="@{/departamentos}">
-                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            <div class="sb-nav-link-icon"><i class="fas fa-map-marked-alt"></i></div>
                             Departamentos
                         </a>
                         <a class="nav-link" th:href="@{/usuarios}">
-                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
                             Usuarios
                         </a>
                     </div>
@@ -111,7 +186,7 @@
         <footer class="py-4 bg-light mt-auto">
             <div class="container-fluid px-4">
                 <div class="d-flex align-items-center justify-content-between small">
-                    <div class="text-muted">Copyright &copy; ExploreSV - Sistema sobre Destinos Turisticos 2025</div>
+                    <div class="text-muted">Copyright &copy; ExploreSV - Sistema sobre Destinos Turisticos de El Salvador</div>
                 </div>
             </div>
         </footer>
