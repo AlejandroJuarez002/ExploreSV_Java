@@ -4,8 +4,7 @@
       layout:decorate="/layouts/_mainLayout">
 
 <div layout:fragment="content"
-     class="container-fluid p-5 position-relative"
-     th:style="'background: url(' + @{/assets/img/fondo1.png} + ') no-repeat center center fixed; background-size: cover;'">
+     class="container-fluid p-5 position-relative">
 
   <!-- Overlay translúcido -->
   <div style="position: absolute; top:0; left:0; width:100%; height:100%; background-color: rgba(255,255,255,0.75); z-index:1;"></div>
@@ -38,15 +37,14 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h2 class="text-primary fw-bold">Listado de Categorías</h2>
       <a th:href="@{/categorias/create}"
-         class="btn btn-lg shadow-sm text-white border-0 px-4 py-2"
+         class="btn btn-lg shadow-sm text-white border-0 px-4 py-2 rounded-2"
          style="background-color: #4facfe;">
         ➕ Nueva categoría
       </a>
-
     </div>
 
     <!-- Card contenedor -->
-    <div class="card shadow-lg rounded-4 border-0">
+    <div class="card shadow-sm rounded-4 border-0">
       <div class="card-body p-4" style="background-color: #ffffff;">
         <div class="table-responsive">
           <table class="table table-hover align-middle">
@@ -63,24 +61,21 @@
               <td th:text="${item.nombre}"></td>
               <td>
                 <a th:href="@{/categorias/details/{id} (id = ${item.id})}"
-                   class="btn btn-sm me-1 mb-1 text-secondary border-secondary"
-                   style="border-radius: 10px;"
-                   onmouseover="this.classList.add('btn-secondary','text-white'); this.classList.remove('text-secondary','border-secondary');"
-                   onmouseout="this.classList.remove('btn-secondary','text-white'); this.classList.add('text-secondary','border-secondary');">
+                   class="btn btn-sm me-1 mb-1 text-secondary border-secondary rounded-2"
+                   onmouseover="this.style.backgroundColor='#f8f9fa'; this.style.color='#6c757d';"
+                   onmouseout="this.style.backgroundColor='transparent'; this.style.color='#6c757d';">
                   Detalles
                 </a>
                 <a th:href="@{/categorias/edit/{id} (id = ${item.id})}"
-                   class="btn btn-sm me-1 mb-1 text-info border-info"
-                   style="border-radius: 10px;"
-                   onmouseover="this.classList.add('btn-info','text-white'); this.classList.remove('text-info','border-info');"
-                   onmouseout="this.classList.remove('btn-info','text-white'); this.classList.add('text-info','border-info');">
+                   class="btn btn-sm me-1 mb-1 text-info border-info rounded-2"
+                   onmouseover="this.style.backgroundColor='#f8f9fa'; this.style.color='#0dcaf0';"
+                   onmouseout="this.style.backgroundColor='transparent'; this.style.color='#0dcaf0';">
                   Editar
                 </a>
                 <a th:href="@{/categorias/remove/{id} (id = ${item.id})}"
-                   class="btn btn-sm mb-1 text-danger border-danger"
-                   style="border-radius: 10px;"
-                   onmouseover="this.classList.add('btn-danger','text-white'); this.classList.remove('text-danger','border-danger');"
-                   onmouseout="this.classList.remove('btn-danger','text-white'); this.classList.add('text-danger','border-danger');">
+                   class="btn btn-sm mb-1 text-danger border-danger rounded-2"
+                   onmouseover="this.style.backgroundColor='#f8f9fa'; this.style.color='#dc3545';"
+                   onmouseout="this.style.backgroundColor='transparent'; this.style.color='#dc3545';">
                   Eliminar
                 </a>
               </td>
@@ -102,5 +97,3 @@
     </div>
   </div>
 </div>
-
-

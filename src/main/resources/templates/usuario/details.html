@@ -5,83 +5,104 @@
 
 <head>
   <style>
-/* Fondo general */
-body {
-    background: #f5f7fa;
-    font-family: "Poppins", sans-serif;
-    color: #333;
-}
+    /* Fondo general */
+    body {
+        background: #f5f7fa;
+        font-family: "Poppins", sans-serif;
+        color: #333;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
 
-/* Títulos */
-h1 {
-    font-weight: 600;
-    font-size: 2rem;
-    margin-bottom: 25px;
-    color: #2d3436;
-    text-align: center;
-}
+    /* Contenedor principal para evitar que el footer se mueva */
+    .container {
+        flex: 1;
+        padding: 20px;
+    }
 
-/* Contenedor de detalles */
-dl.row {
-    background: #fff;
-    border-radius: 14px;
-    padding: 25px 30px;
-    box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.08);
-    max-width: 750px;
-    margin: 0 auto;
-}
+    /* Título */
+    h1 {
+        font-weight: 600;
+        font-size: 2rem;
+        margin-bottom: 25px;
+        color: #2d3436;
+        text-align: center;
+    }
 
-/* Etiquetas (dt) */
-dt {
-    font-weight: 600;
-    color: #007bff;
-    font-size: 1rem;
-    padding: 10px 0;
-    border-bottom: 1px solid #eee;
-}
+    /* Contenedor de detalles */
+    dl.row {
+        background: #fff;
+        border-radius: 14px;
+        padding: 25px 30px;
+        box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.08);
+        max-width: 750px;
+        margin: 0 auto;
+    }
 
-/* Valores (dd) */
-dd {
-    margin-bottom: 12px;
-    font-size: 1rem;
-    padding: 10px 0;
-    border-bottom: 1px solid #eee;
-    color: #444;
-}
+    /* Etiquetas (dt) y valores (dd) */
+    dt, dd {
+        margin: 0;
+        padding: 12px 0;
+        display: block;
+    }
 
-/* Último valor sin borde */
-dl.row dd:last-child,
-dl.row dt:last-of-type {
-    border-bottom: none;
-}
+    /* Etiquetas (dt) */
+    dt {
+        font-weight: 600;
+        color: #007bff;
+        font-size: 1rem;
+    }
 
-/* Botón regresar */
-a {
-    display: inline-block;
-    margin-top: 20px;
-    border-radius: 8px;
-    font-weight: 500;
-    padding: 8px 16px;
-    text-decoration: none;
-    border: 1px solid #6c757d;
-    color: #6c757d;
-    transition: all 0.3s ease;
-}
+    /* Valores (dd) */
+    dd {
+        font-size: 1rem;
+        color: #444;
+        border-bottom: 1px solid #eee;
+    }
 
-a:hover {
-    background: #6c757d;
-    color: #fff;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
-}
+    /* Último valor sin borde */
+    dd:last-child {
+        border-bottom: none;
+    }
 
-/* SweetAlert ajustes */
-.swal2-popup {
-    border-radius: 14px !important;
-    font-family: "Poppins", sans-serif;
-}
+    /* Botón regresar */
+    a {
+        display: inline-block;
+        margin-top: 20px;
+        border-radius: 8px;
+        font-weight: 500;
+        padding: 8px 16px;
+        text-decoration: none;
+        border: 1px solid #6c757d;
+        color: #6c757d;
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+
+    a:hover {
+        background: #6c757d;
+        color: #fff;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+    }
+
+    /* SweetAlert ajustes */
+    .swal2-popup {
+        border-radius: 14px !important;
+        font-family: "Poppins", sans-serif;
+    }
+
+    /* Footer */
+    footer {
+        margin-top: auto;
+        padding: 20px;
+        text-align: center;
+    }
   </style>
 </head>
+
+
 <div layout:fragment="content">
   <h1>Detalles del Usuario</h1>
   <div>
