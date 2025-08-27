@@ -1,18 +1,95 @@
-<html lang="en"
+<html lang="es"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="/layouts/_mainLayout">
-
-<div layout:fragment="content">
-    <h1>Confirmar Reactivación</h1>
-    <p>
-        ¿Está seguro que desea reactivar al usuario
-        <strong th:text="${usuario.nombre} + ' ' + ${usuario.apellido}"></strong>?
-    </p>
-
-    <form th:action="@{/usuarios/activate/{id}(id=${usuario.id})}" method="post">
-        <button type="submit" class="btn btn-success">Reactivar</button>
-        <a th:href="@{/usuarios/inactive}" class="btn btn-secondary">Cancelar</a>
-    </form>
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            overflow: hidden;
+            background-color: gray;
+        }
+        /* Botones personalizados */
+        .btn-reactivar {
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            transition: 0.3s ease;
+            padding: 0.5rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+        }
+        .btn-reactivar:hover {
+            background-color: #218838;
+        }
+        .btn-regresar {
+            background-color: #6c757d;
+            color: #fff;
+            border: none;
+            transition: 0.3s ease;
+            padding: 0.5rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+        }
+        .btn-regresar:hover {
+            background-color: #5a6268;
+        }
+        /* Card de confirmación */
+        .card-confirmar {
+            background-color: #ffffff;
+            border-radius: 1rem;
+            box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+            padding: 2rem;
+        }
+        .card-header-confirmar {
+            background: linear-gradient(90deg, #28a745, #3d85c6);
+            color: #fff;
+            padding: 1rem;
+            border-radius: 1rem 1rem 0 0;
+            text-align: center;
+            font-weight: 600;
+        }
+        p {
+            font-size: 1.05rem;
+            color: #495057;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        strong {
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<div layout:fragment="content"
+     class="container-fluid min-vh-100 d-flex align-items-center justify-content-center overflow-hidden">
+    <!-- Capa translúcida -->
+    <div style="position: absolute; top:0; left:0; width:100%; height:100%; background-color: rgba(255,255,255,0.7);"></div>
+    <!-- Contenido central -->
+    <div class="row justify-content-center w-100 position-relative">
+        <div class="col-lg-6 col-md-8">
+            <div class="card-confirmar">
+                <div class="card-header-confirmar">
+                    <h4>✅ Confirmar Reactivación</h4>
+                </div>
+                <form th:action="@{/usuarios/activate/{id}(id=${usuario.id})}" method="post" class="mt-4">
+                    <p>
+                        ¿Está seguro que desea reactivar al usuario
+                        <strong th:text="${usuario.nombre} + ' ' + ${usuario.apellido}"></strong>?
+                    </p>
+                    <hr class="my-4">
+                    <div class="d-flex justify-content-between">
+                        <a th:href="@{/usuarios/inactive}" class="btn btn-regresar px-4 py-2 rounded-3 shadow-sm">
+                            ⬅ Regresar
+                        </a>
+                        <button type="submit" class="btn btn-reactivar px-4 py-2 rounded-3 shadow-sm">
+                            ✅ Reactivar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 </html>

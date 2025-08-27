@@ -48,7 +48,7 @@ public class DestinoTuristicoController {
                         @RequestParam(value = "q", required = false) String q) {
 
         int currentPage = page.orElse(1) - 1;
-        int pageSize = size.orElse(10);
+        int pageSize = size.orElse(6);
         Pageable pageable = PageRequest.of(currentPage, pageSize);
 
         Page<DestinoTuristico> destinos;

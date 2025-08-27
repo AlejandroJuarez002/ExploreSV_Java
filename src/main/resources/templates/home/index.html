@@ -2,27 +2,157 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="/layouts/_mainLayout">
+<head>
+    <!-- Google Fonts para tipografía -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        .content-wrapper, .card-custom, .table, .btn, h2 {
+            font-family: 'Poppins', sans-serif;
+        }
+        .container-fluid.departamento-container {
+            background-size: cover;
+        }
+        .overlay-translucido {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.75);
+            z-index: 1;
+        }
+        .content-wrapper {
+            position: relative;
+            z-index: 2;
+        }
+        .btn-nuevo {
+            background-color: #4facfe;
+            color: white;
+            border: 0;
+            padding: 0.5rem 1rem !important;
+            font-size: 0.9rem !important;
+        }
+        .btn-nuevo:hover {
+            background-color: #329af0 !important;
+            color: white !important;
+        }
+
+        /* Botones de acción con color sólido */
+        .btn-detalles {
+            background-color: #6c757d;
+            color: white !important;
+            border: none;
+            border-radius: 6px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+            margin: 0 2px;
+        }
+        .btn-detalles:hover {
+            background-color: #5a6268 !important;
+        }
+
+        .btn-editar {
+            background-color: #17a2b8;
+            color: white !important;
+            border: none;
+            border-radius: 6px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+            margin: 0 2px;
+        }
+        .btn-editar:hover {
+            background-color: #138496 !important;
+        }
+
+        .btn-eliminar {
+            background-color: #dc3545;
+            color: white !important;
+            border: none;
+            border-radius: 6px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+            margin: 0 2px;
+        }
+        .btn-eliminar:hover {
+            background-color: #c82333 !important;
+        }
+        .card-custom {
+            background-color: #ffffff;
+        }
+        /* Columna de acciones más compacta */
+        .acciones-col {
+            width: 1%;
+            white-space: nowrap;
+        }
+        /* Ajuste del contenedor de la tabla */
+        .table-container {
+            overflow-x: auto;
+        }
+        /* Reducir ancho del contenedor */
+        .card.shadow-lg {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        /* Reducir ancho columna ID */
+        .table th:nth-child(1),
+        .table td:nth-child(1) {
+            max-width: 8px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        /* Reducir ancho columna Nombre */
+        .table th:nth-child(2),
+        .table td:nth-child(2) {
+            max-width: 20px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        h2.text-primary.fw-bold {
+            text-align: center;
+            margin-top: 2rem !important;
+            margin-bottom: 2rem !important;
+            width: 100%;
+        }
+        .d-flex.justify-content-between.align-items-center.mb-4 {
+            display: block !important;
+        }
+        .btn-nuevo {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            z-index: 3;
+        }
+    </style>
+</head>
+
 <div layout:fragment="content">
-    <h1 class="text-center">Destinos Turísticos recientes.</h1>
+    <!-- Encabezado -->
+    <h1 class="text-center" style="font-family: 'Poppins', serif; font-weight: 600; margin-top: 2rem; margin-bottom: 2rem; color: #2c3e50; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);">Destinos Turísticos.</h1>
+
+    <!-- Contenedor de tarjetas -->
     <div class="row">
         <div class="col-md-4 mb-4" th:each="destino : ${destinoTuristicos}">
             <div class="card h-100 shadow-sm">
-                <a th:href="@{'/destinoTuristicos/details/' + ${destino['destino'].id}}">
+                <!-- Enlace a detalles del destino -->
+                <a th:href="@{'/destinoTuristicos/details/' + ${destino['destino'].id}}" style="text-decoration: none; color: inherit;">
+                    <!-- Imagen del destino -->
                     <img
                             th:if="${destino['imagenes'].size() > 0 and destino['imagenes'][0].base64Image != null}"
                             th:src="'data:image/png;base64,' + ${destino['imagenes'][0].base64Image}"
                             class="card-img-top"
-                            alt="Imagen destino"
-                            style="height: 200px; object-fit: cover;">
+                            alt="Imagen destino">
                 </a>
+                <!-- Cuerpo de la tarjeta -->
                 <div class="card-body">
                     <h5 class="card-title">
                         <a th:href="@{'/destinoTuristicos/details/' + ${destino['destino'].id}}"
-                           th:text="${destino['destino'].nombre}"
-                           style="text-decoration: none; color: inherit;">
+                           th:text="${destino['destino'].nombre}">
                         </a>
                     </h5>
-                    <!-- Ubicación, Departamento y Categoría -->
+                    <!-- Información del destino -->
                     <p class="card-text">
                         <strong>Ubicación:</strong> <span th:text="${destino['destino'].ubicacion}"></span><br>
                         <strong>Departamento:</strong> <span th:text="${destino['destino'].departamento.nombre}"></span><br>
@@ -32,14 +162,19 @@
             </div>
         </div>
     </div>
+
+
+    <!-- Paginación con estilo premium -->
     <nav aria-label="Page navigation example" class="mt-4">
         <ul class="pagination justify-content-center">
-            <li class="page-item" th:each="pageNumber : ${pageNumbers}">
+            <li class="page-item" th:each="pageNumber : ${pageNumbers}"
+                th:classappend="${pageNumber == currentPage} ? 'active' : ''">
                 <a class="page-link"
                    th:href="@{|/home?page=${pageNumber}${q != null ? '&q=' + q : ''}|}"
                    th:text="${pageNumber}"></a>
             </li>
         </ul>
     </nav>
+
 </div>
 </html>

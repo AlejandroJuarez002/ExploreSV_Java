@@ -1,46 +1,206 @@
-<html lang="en"
+<html lang="es"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="/layouts/_mainLayout">
-
-<div layout:fragment="content">
-    <h1>Usuarios Desactivados</h1>
-    <a th:href="@{/usuarios}" class="btn btn-outline-primary">Volver a Usuarios Activos</a>
-
-    <div class="card mb-4">
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Apellido</th>
-                <th>Nombre de Usuario</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="item : ${usuarios}">
-                <td th:text="${item.id}"></td>
-                <td th:text="${item.nombre}"></td>
-                <td th:text="${item.apellido}"></td>
-                <td th:text="${item.nombreUsuario}"></td>
-                <td th:text="${item.status == 1} ? 'Activo' : 'Inactivo'"></td>
-                <td>
-                    <a th:href="@{/usuarios/activate/{id}(id=${item.id})}" class="btn btn-outline-success">Reactivar</a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+<head>
+    <!-- Fuente Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        .content-wrapper, .card-custom, .table, .btn, h1, h2 {
+          font-family: 'Poppins', sans-serif;
+        }
+        .container-fluid.usuario-container {
+          background-size: cover;
+        }
+        .overlay-translucido {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(255, 255, 255, 0.75);
+          z-index: 1;
+        }
+        .content-wrapper {
+          position: relative;
+          z-index: 2;
+        }
+        /* Botón "Volver a Usuarios Activos" */
+        .btn-outline-primary {
+          background-color: #4facfe;
+          color: white;
+          border: 0;
+          padding: 0.5rem 1rem !important;
+          font-size: 0.9rem !important;
+          border-radius: 6px;
+        }
+        .btn-outline-primary:hover {
+          background-color: #329af0 !important;
+          color: white !important;
+        }
+        /* Botón "Reactivar" */
+        .btn-outline-success {
+          background-color: #27ae60;
+          color: white !important;
+          border: none;
+          border-radius: 6px;
+          padding: 0.25rem 0.5rem;
+          font-size: 0.875rem;
+          margin: 0 2px;
+        }
+        .btn-outline-success:hover {
+          background-color: #219653 !important;
+        }
+        .card-custom {
+          background-color: #ffffff;
+        }
+        /* Columna de acciones más compacta */
+        .acciones-col {
+          width: 1%;
+          white-space: nowrap;
+        }
+        /* Ajuste del contenedor de la tabla */
+        .table-container {
+          overflow-x: auto;
+        }
+        /* Ajuste de ancho de columnas */
+        .table th:nth-child(1),
+        .table td:nth-child(1) {
+          width: 5%;
+          min-width: 40px;
+        }
+        .table th:nth-child(2),
+        .table td:nth-child(2) {
+          width: 15%;
+          min-width: 80px;
+        }
+        .table th:nth-child(3),
+        .table td:nth-child(3) {
+          width: 15%;
+          min-width: 80px;
+        }
+        .table th:nth-child(4),
+        .table td:nth-child(4) {
+          width: 15%;
+          min-width: 100px;
+        }
+        .table th:nth-child(5),
+        .table td:nth-child(5) {
+          width: 10%;
+          min-width: 60px;
+        }
+        .table th:nth-child(6),
+        .table td:nth-child(6) {
+          width: 20%;
+          min-width: 150px;
+        }
+        /* Estado activo/inactivo */
+        .table td:nth-child(5) {
+          font-weight: 600;
+        }
+        .table td:contains("Activo") {
+          color: #27ae60;
+        }
+        .table td:contains("Inactivo") {
+          color: #e74c3c;
+        }
+        /* Paginación */
+        .pagination .page-link {
+          color: #5a6c7d;
+          background-color: #fff;
+          border: 1px solid #eae4dc;
+          border-radius: 50% !important;
+          width: 40px;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin: 0 4px;
+          transition: all 0.3s ease;
+        }
+        /* Efecto hover para la paginación (páginas INACTIVAS) */
+        .pagination .page-link:hover {
+          background-color: #6c757d;
+          color: #fff;
+          border-color: #6c757d;
+        }
+        /* Paginación activa */
+        .pagination .page-item.active .page-link {
+          background-color: #2c3e50;
+          color: #fff;
+          border-color: #2c3e50;
+        }
+        /* Ajustes para responsividad */
+        @media (max-width: 768px) {
+          .table-container {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+          }
+          .table {
+            min-width: 600px;
+            white-space: nowrap;
+          }
+          /* Botones de acciones apilados verticalmente */
+          .acciones-col {
+            width: 120px;
+            white-space: normal;
+          }
+          .btn-outline-success {
+            display: block;
+            width: 100%;
+            margin-bottom: 0.3rem;
+            text-align: center;
+          }
+        }
+    </style>
+</head>
+<div layout:fragment="content" class="container-fluid p-5 position-relative usuario-container">
+    <div class="overlay-translucido"></div>
+    <div class="container position-relative content-wrapper">
+        <h1 class="text-primary fw-bold">Usuarios Desactivados</h1>
+        <a th:href="@{/usuarios}" class="btn btn-outline-primary mb-4">Volver a Usuarios Activos</a>
+        <!-- Card contenedor -->
+        <div class="card shadow-lg rounded-4 border-0">
+            <div class="card-body p-4 card-custom">
+                <div class="table-container">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Nombre de Usuario</th>
+                            <th>Estado</th>
+                            <th class="acciones-col">Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="item : ${usuarios}">
+                            <td th:text="${item.id}"></td>
+                            <td th:text="${item.nombre}"></td>
+                            <td th:text="${item.apellido}"></td>
+                            <td th:text="${item.nombreUsuario}"></td>
+                            <td th:text="${item.status == 1} ? 'Activo' : 'Inactivo'"></td>
+                            <td class="acciones-col">
+                                <a th:href="@{/usuarios/activate/{id}(id=${item.id})}" class="btn btn-sm btn-outline-success">
+                                    Reactivar
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Paginación -->
+                <nav aria-label="Page navigation example" class="mt-3">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item" th:each="pageNumber : ${pageNumbers}">
+                            <a class="page-link" th:href="@{|/usuarios/inactive?page=${pageNumber}|}" th:text="${pageNumber}"></a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
     </div>
-
-    <!-- Paginador -->
-    <nav aria-label="Page navigation">
-        <ul class="pagination">
-            <li class="page-item" th:each="pageNumber : ${pageNumbers}">
-                <a class="page-link" th:href="@{|/usuarios/inactive?page=${pageNumber}|}" th:text="${pageNumber}"></a>
-            </li>
-        </ul>
-    </nav>
 </div>
 </html>
