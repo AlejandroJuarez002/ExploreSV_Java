@@ -56,6 +56,7 @@ public class DatabaseWebSecurity {
     }
 
 
+
     @Bean
     public PasswordEncoder passwordEncoder(){
         return  new BCryptPasswordEncoder();
