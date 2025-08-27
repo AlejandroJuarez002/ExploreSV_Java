@@ -1,7 +1,8 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="/layouts/_mainLayout">
+      layout:decorate="/layouts/_mainLayout"
+      xmlns="http://www.w3.org/1999/html">
 <head>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -109,14 +110,14 @@
             align-items: center;
         }
         /* Estilo para la vista previa de imágenes */
-        #preview, #previewContainer {
+        #previewContainer {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
             margin-top: 1rem;
             justify-content: center;
         }
-        #preview img, #previewContainer img {
+        #previewContainer img {
             border: 1px solid #ccc;
             border-radius: 5px;
             object-fit: cover;
@@ -124,7 +125,7 @@
             height: 120px;
         }
         /* Botón para eliminar imagen */
-        #preview button, #previewContainer button {
+        #previewContainer button {
             background: red;
             color: white;
             border: none;
@@ -191,7 +192,7 @@
             <div class="col-lg-10">
                 <div class="card-detalles">
                     <div class="card-header-detalles">
-                        <h4>🌴 Editar destino turístico</h4>
+                        <h4>🌴 Editar destino</h4>
                     </div>
                     <form id="destinoForm"
                           th:action="@{/destinoTuristicos/save}"
@@ -199,93 +200,85 @@
                           method="post"
                           enctype="multipart/form-data">
                         <input type="hidden" th:field="*{id}">
+                        <!-- Campos normales -->
                         <div class="row">
                             <div class="col-md-10 offset-md-1">
                                 <div class="form-group">
                                     <label for="nombre">Nombre</label>
-                                    <input type="text" class="form-control"
-                                           th:field="*{nombre}" id="nombre"
-                                           placeholder="Nombre del destino turístico"
-                                           maxlength="100" required>
+                                    <input type="text" class="form-control" th:field="*{nombre}" id="nombre" placeholder="Nombre del destino" maxlength="100" required>
                                 </div>
                             </div>
                         </div>
+                        <!-- Descripción -->
                         <div class="row">
                             <div class="col-md-10 offset-md-1">
                                 <div class="form-group">
                                     <label for="descripcion">Descripción</label>
-                                    <textarea class="form-control"
-                                              th:field="*{descripcion}" id="descripcion"
-                                              cols="12" rows="3" maxlength="2500" required></textarea>
+                                    <textarea class="form-control" th:field="*{descripcion}" id="descripcion" cols="12" rows="3" maxlength="2500" required></textarea>
                                 </div>
                             </div>
                         </div>
+                        <!-- Ubicación -->
                         <div class="row">
                             <div class="col-md-10 offset-md-1">
                                 <div class="form-group">
                                     <label for="ubicacion">Ubicación</label>
-                                    <textarea class="form-control"
-                                              th:field="*{ubicacion}" id="ubicacion"
-                                              cols="12" rows="3" maxlength="300" required></textarea>
+                                    <textarea class="form-control" th:field="*{ubicacion}" id="ubicacion" cols="12" rows="3" maxlength="300" required></textarea>
                                 </div>
                             </div>
                         </div>
+                        <!-- Horario -->
                         <div class="row">
                             <div class="col-md-10 offset-md-1">
                                 <div class="form-group">
                                     <label for="horario">Horario</label>
-                                    <textarea class="form-control"
-                                              th:field="*{horario}" id="horario"
-                                              cols="12" rows="3" maxlength="100" required></textarea>
+                                    <textarea class="form-control" th:field="*{horario}" id="horario" cols="12" rows="3" maxlength="100" required></textarea>
                                 </div>
                             </div>
                         </div>
-                        <!-- Menú desplegable para Departamentos -->
+                        <!-- Departamento -->
                         <div class="row">
                             <div class="col-md-10 offset-md-1">
                                 <div class="form-group">
                                     <label for="departamento">Departamento:</label>
-                                    <select id="departamento" th:field="*{departamento}" class="form-control" required>
+                                    <select class="form-control" th:field="*{departamento}" id="departamento" required>
                                         <option value="">Selecciona un departamento</option>
-                                        <option th:each="departamento : ${departamentos}"
-                                                th:value="${departamento.id}"
-                                                th:text="${departamento.nombre}"
-                                                th:selected="${departamento.id == destinoTuristico.departamento?.id}">
+                                        <option th:each="depto : ${departamentos}"
+                                                th:value="${depto.id}"
+                                                th:text="${depto.nombre}"
+                                                th:selected="${depto.id eq destinoTuristico.departamento?.id}">
                                         </option>
                                     </select>
                                 </div>
                             </div>
                         </div>
-                        <!-- Menú desplegable para Categorías -->
+                        <!-- Categoría -->
                         <div class="row">
                             <div class="col-md-10 offset-md-1">
                                 <div class="form-group">
                                     <label for="categoria">Categoría:</label>
-                                    <select id="categoria" th:field="*{categoria}" class="form-control" required>
+                                    <select class="form-control" th:field="*{categoria}" id="categoria" required>
                                         <option value="">Selecciona una categoría</option>
-                                        <option th:each="categoria : ${categorias}"
-                                                th:value="${categoria.id}"
-                                                th:text="${categoria.nombre}"
-                                                th:selected="${categoria.id == destinoTuristico.categoria?.id}">
+                                        <option th:each="cat : ${categorias}"
+                                                th:value="${cat.id}"
+                                                th:text="${cat.nombre}"
+                                                th:selected="${cat.id eq destinoTuristico.categoria?.id}">
                                         </option>
                                     </select>
                                 </div>
                             </div>
                         </div>
-                        <!-- Subida de imágenes -->
+                        <!-- Subir nuevas imágenes -->
                         <div class="row">
                             <div class="col-md-10 offset-md-1">
                                 <div class="form-group">
                                     <label for="imagenFiles">Nuevas imágenes</label>
-                                    <input type="file" id="imagenFiles"
-                                           accept="image/*"
-                                           class="form-control"
-                                           multiple>
+                                    <input type="file" id="imagenFiles" name="imagenFiles" multiple class="form-control"/>
                                 </div>
                             </div>
                         </div>
-                        <!-- Vista previa de nuevas imágenes -->
-                        <div id="previewContainer" class="d-flex flex-wrap mt-3"></div>
+                        <!-- Previsualización de nuevas imágenes -->
+                        <div class="form-group" id="previewContainer"></div>
                         <!-- Imágenes actuales con opción de eliminar -->
                         <div class="row">
                             <div class="col-md-10 offset-md-1">
@@ -297,18 +290,16 @@
                                                  th:src="'data:image/png;base64,' + ${img.base64Image}"
                                                  alt="Imagen destino">
                                             <button type="button" class="btn-eliminar-imagen" onclick="toggleDelete(this)">×</button>
-                                            <input type="hidden" name="deleteImages" th:value="${img.id}" disabled>
+                                            <input type="checkbox" name="deleteImages" th:value="${img.id}" style="display:none;">
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <hr>
+                        <!-- Botones -->
                         <div class="botones-container">
-                            <a th:href="@{/destinoTuristicos}" class="btn btn-secondary px-4 py-2 rounded-3 shadow-sm">
-                                ⬅ Regresar
-                            </a>
-                            <button type="submit" class="btn btn-primary px-4 py-2 rounded-3 shadow-sm">Guardar</button>
+                            <a th:href="@{/destinoTuristicos}" class="btn btn-secondary">Cancelar</a>
+                            <button type="submit" class="btn btn-primary">Guardar</button>
                         </div>
                     </form>
                 </div>
@@ -319,92 +310,60 @@
         // =============== IMÁGENES EXISTENTES (BD) ===============
         function toggleDelete(btn) {
             let container = btn.closest("div");
-            let checkbox = container.querySelector("input[type=hidden]");
-            if (btn.style.background === "gray") {
+            let checkbox = container.querySelector("input[type=checkbox]");
+            if (checkbox.checked) {
+                checkbox.checked = false;
                 btn.style.background = "red";
-                checkbox.disabled = true;
             } else {
+                checkbox.checked = true;
                 btn.style.background = "gray";
-                checkbox.disabled = false;
             }
         }
         // =============== IMÁGENES NUEVAS (LOCALES) ===============
-        let selectedFiles = [];
-        document.getElementById("imagenFiles").addEventListener("change", function (event) {
-            Array.from(event.target.files).forEach(file => {
-                // Evitar duplicados comparando nombre + tamaño
-                let exists = selectedFiles.some(f => f.name === file.name && f.size === file.size);
-                if (!exists && file.type.startsWith("image/")) {
-                    selectedFiles.push(file);
-                }
-            });
-            renderPreview();
-            // Limpio el input para permitir volver a elegir más
-            event.target.value = "";
-        });
-        function renderPreview() {
-            let preview = document.getElementById("previewContainer");
-            preview.innerHTML = "";
-            selectedFiles.forEach((file, index) => {
-                let reader = new FileReader();
+        const inputFiles = document.getElementById('imagenFiles');
+        const previewContainer = document.getElementById('previewContainer');
+        inputFiles.addEventListener('change', function () {
+            Array.from(this.files).forEach((file) => {
+                const reader = new FileReader();
                 reader.onload = function (e) {
-                    let div = document.createElement("div");
-                    div.style.position = "relative";
-                    div.style.display = "inline-block";
-                    div.style.margin = "5px";
-                    let img = document.createElement("img");
+                    // Crear contenedor de imagen con botón X
+                    const container = document.createElement('div');
+                    container.style.position = 'relative';
+                    container.style.display = 'inline-block';
+                    container.style.margin = '5px';
+                    // Imagen
+                    const img = document.createElement('img');
                     img.src = e.target.result;
-                    img.width = 120;
-                    img.style.border = "1px solid #ccc";
-                    img.style.borderRadius = "5px";
-                    img.style.objectFit = "cover";
-                    // Botón para eliminar imagen de la selección
-                    let btn = document.createElement("button");
-                    btn.innerHTML = "×";
-                    btn.type = "button";
-                    btn.style.position = "absolute";
-                    btn.style.top = "2px";
-                    btn.style.right = "2px";
-                    btn.style.background = "red";
-                    btn.style.color = "white";
-                    btn.style.border = "none";
-                    btn.style.borderRadius = "50%";
-                    btn.style.width = "22px";
-                    btn.style.height = "22px";
-                    btn.style.cursor = "pointer";
-                    btn.onclick = function () {
-                        selectedFiles.splice(index, 1);
-                        renderPreview();
+                    img.style.width = '120px';
+                    img.style.height = '120px';
+                    img.style.objectFit = 'cover';
+                    img.style.borderRadius = '5px';
+                    img.style.border = '1px solid #ccc';
+                    // Botón X
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.innerHTML = '×';
+                    btn.className = 'btn-eliminar-imagen';
+                    btn.style.position = 'absolute';
+                    btn.style.top = '2px';
+                    btn.style.right = '2px';
+                    // Evento eliminar SOLO para nuevas imágenes
+                    btn.onclick = () => {
+                        container.remove();
+                        // Quitar el archivo del input (reconstruimos el FileList)
+                        const dt = new DataTransfer();
+                        Array.from(inputFiles.files)
+                            .forEach(f => {
+                                if (f !== file) dt.items.add(f);
+                            });
+                        inputFiles.files = dt.files;
                     };
-                    div.appendChild(img);
-                    div.appendChild(btn);
-                    preview.appendChild(div);
+                    // Armar contenedor
+                    container.appendChild(img);
+                    container.appendChild(btn);
+                    previewContainer.appendChild(container);
                 };
                 reader.readAsDataURL(file);
-            });
-        }
-        // Al enviar, agregamos todas las imágenes seleccionadas al FormData
-        document.getElementById("destinoForm").addEventListener("submit", function (e) {
-            e.preventDefault();
-            let formData = new FormData(this);
-            // Agregar imágenes nuevas
-            selectedFiles.forEach(file => {
-                formData.append("imagenFiles", file);
-            });
-            // Agregar IDs de imágenes a eliminar
-            document.querySelectorAll('input[name="deleteImages"]:not([disabled])').forEach(input => {
-                formData.append("deleteImages", input.value);
-            });
-            // Enviar datos
-            fetch(this.action, {
-                method: this.method,
-                body: formData
-            }).then(response => {
-                if (response.ok) {
-                    window.location.href = "/destinoTuristicos";
-                } else {
-                    alert("Error al guardar el destino");
-                }
             });
         });
     </script>
