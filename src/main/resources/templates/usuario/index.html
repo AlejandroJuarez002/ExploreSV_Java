@@ -1,73 +1,291 @@
-<html lang="en"
+<html lang="es"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="/layouts/_mainLayout">
+<head>
+    <!-- Fuente Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        .content-wrapper, .card-custom, .table, .btn, h1, h2 {
+          font-family: 'Poppins', sans-serif;
+        }
+        .container-fluid.usuario-container {
+          background-size: cover;
+        }
+        .overlay-translucido {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(255, 255, 255, 0.75);
+          z-index: 1;
+        }
+        .content-wrapper {
+          position: relative;
+          z-index: 2;
+        }
+        /* Botón "Nuevo usuario" */
+        .btn-nuevo {
+          background-color: #4facfe;
+          color: white;
+          border: 0;
+          padding: 0.5rem 1rem !important;
+          font-size: 0.9rem !important;
+        }
+        .btn-nuevo:hover {
+          background-color: #329af0 !important;
+          color: white !important;
+        }
+        /* Botón "Usuarios desactivados" */
+        .btn-desactivados {
+          background-color: #ffc107;
+          color: white;
+          border: 0;
+          padding: 0.5rem 1rem !important;
+          font-size: 0.9rem !important;
+        }
+        .btn-desactivados:hover {
+          background-color: #e0a800 !important;
+          color: white !important;
+        }
+        /* Botones de acción con color sólido */
+        .btn-detalles {
+          background-color: #6c757d;
+          color: white !important;
+          border: none;
+          border-radius: 6px;
+          padding: 0.25rem 0.5rem;
+          font-size: 0.875rem;
+          margin: 0 2px;
+        }
+        .btn-detalles:hover {
+          background-color: #5a6268 !important;
+        }
+        .btn-editar {
+          background-color: #17a2b8;
+          color: white !important;
+          border: none;
+          border-radius: 6px;
+          padding: 0.25rem 0.5rem;
+          font-size: 0.875rem;
+          margin: 0 2px;
+        }
+        .btn-editar:hover {
+          background-color: #138496 !important;
+        }
+        .btn-desactivar {
+          background-color: #ffc107;
+          color: white !important;
+          border: none;
+          border-radius: 6px;
+          padding: 0.25rem 0.5rem;
+          font-size: 0.875rem;
+          margin: 0 2px;
+        }
+        .btn-desactivar:hover {
+          background-color: #e0a800 !important;
+        }
+        .card-custom {
+          background-color: #ffffff;
+        }
+        /* Columna de acciones más compacta */
+        .acciones-col {
+          width: 1%;
+          white-space: nowrap;
+        }
+        /* Ajuste del contenedor de la tabla */
+        .table-container {
+          overflow-x: auto;
+        }
+        /* Ajuste de ancho de columnas */
+        .table th:nth-child(1),
+        .table td:nth-child(1) {
+          width: 5%;
+          min-width: 40px;
+        }
 
-<div layout:fragment="content">
+        .table th:nth-child(2),
+        .table td:nth-child(2) {
+          width: 15%;
+          min-width: 80px;
+        }
 
-    <!--Mostrar mensaje de confirmacion en caso de exito-->
-    <div th:if="${msg != null}">
-        <script>
-            Swal.fire({
-            title: "Confirmacion",
-            text: '[[${msg}]]',
-            icon: "sucess"
-            });
-        </script>
+        .table th:nth-child(3),
+        .table td:nth-child(3) {
+          width: 15%;
+          min-width: 80px;
+        }
+
+        .table th:nth-child(4),
+        .table td:nth-child(4) {
+          width: 15%;
+          min-width: 100px;
+        }
+
+        .table th:nth-child(5),
+        .table td:nth-child(5) {
+          width: 10%;
+          min-width: 60px;
+        }
+
+        .table th:nth-child(6),
+        .table td:nth-child(6) {
+          width: 10%;
+          min-width: 60px;
+        }
+
+        /* Columna de acciones */
+        .acciones-col {
+          width: 20%;
+          min-width: 150px;
+        }
+        /* Estado activo/inactivo */
+        .table td:nth-child(6) {
+          font-weight: 600;
+        }
+        .table td:contains("Activo") {
+          color: #27ae60;
+        }
+        .table td:contains("Inactivo") {
+          color: #e74c3c;
+        }
+        /* Paginación */
+        .pagination .page-link {
+          color: #5a6c7d;
+          background-color: #fff;
+          border: 1px solid #eae4dc;
+          border-radius: 50% !important;
+          width: 40px;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin: 0 4px;
+          transition: all 0.3s ease;
+        }
+        /* Efecto hover para la paginación (páginas INACTIVAS) */
+        .pagination .page-link:hover {
+          background-color: #6c757d;
+          color: #fff;
+          border-color: #6c757d;
+        }
+        /* Paginación activa */
+        .pagination .page-item.active .page-link {
+          background-color: #2c3e50;
+          color: #fff;
+          border-color: #2c3e50;
+        }
+        /* Ajustes para responsividad */
+        @media (max-width: 768px) {
+          .table-container {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+          }
+          .table {
+            min-width: 600px;
+            white-space: nowrap;
+          }
+          /* Botones de acciones apilados verticalmente */
+          .acciones-col {
+            width: 120px;
+            white-space: normal;
+          }
+          .btn-detalles,
+          .btn-editar,
+          .btn-desactivar {
+            display: block;
+            width: 100%;
+            margin-bottom: 0.3rem;
+            text-align: center;
+          }
+        }
+    </style>
+</head>
+<div layout:fragment="content" class="container-fluid p-5 position-relative usuario-container">
+    <div class="overlay-translucido"></div>
+    <div class="container position-relative content-wrapper">
+        <!-- SweetAlerts -->
+        <div th:if="${msg != null}">
+            <script>
+                Swal.fire({
+                  title: "Confirmación",
+                  text: '[[${msg}]]',
+                  icon: "success"
+                });
+            </script>
+        </div>
+        <div th:if="${error != null}">
+            <script>
+                Swal.fire({
+                  title: "Error",
+                  text: '[[${error}]]',
+                  icon: "error"
+                });
+            </script>
+        </div>
+        <!-- Título y botones -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="text-primary fw-bold">Lista de Usuarios</h1>
+            <div>
+                <a th:href="@{/usuarios/create}" class="btn btn-lg shadow-sm text-white px-4 py-2 btn-nuevo">
+                    ➕ Nuevo usuario
+                </a>
+                <a th:href="@{/usuarios/inactive}" class="btn btn-lg shadow-sm text-white px-4 py-2 btn-desactivados">
+                    Usuarios Desactivados
+                </a>
+            </div>
+        </div>
+        <!-- Card contenedor -->
+        <div class="card shadow-lg rounded-4 border-0">
+            <div class="card-body p-4 card-custom">
+                <div class="table-container">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>NombreUsuario</th>
+                            <th>Clave</th>
+                            <th>Estado</th>
+                            <th class="acciones-col">Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="item : ${usuarios}">
+                            <td th:text="${item.id}"></td>
+                            <td th:text="${item.nombre}"></td>
+                            <td th:text="${item.apellido}"></td>
+                            <td th:text="${item.nombreUsuario}"></td>
+                            <td>*****</td>
+                            <td th:text="${item.status == 1} ? 'Activo' : 'Inactivo'"></td>
+                            <td class="acciones-col">
+                                <a th:href="@{/usuarios/details/{id} (id = ${item.id})}" class="btn btn-sm btn-detalles">
+                                    Detalles
+                                </a>
+                                <a th:href="@{/usuarios/edit/{id} (id = ${item.id})}" class="btn btn-sm btn-editar">
+                                    Editar
+                                </a>
+                                <a th:href="@{/usuarios/desactivate/{id}(id=${item.id})}" class="btn btn-sm btn-desactivar">
+                                    Desactivar
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Paginación -->
+                <nav aria-label="Page navigation example" class="mt-3">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item" th:each="pageNumber : ${pageNumbers}">
+                            <a class="page-link" th:href="@{|/usuarios?page=${pageNumber}|}" th:text="${pageNumber}"></a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
     </div>
-
-    <!--Mostrar mensaje de error en caso de error-->
-    <div th:if="${error != null}">
-        <script>
-            Swal.fire({
-            title: "Error",
-            text: '[[${error}]]',
-            icon: "error"
-            });
-        </script>
-    </div>
-
-    <h1>Lista de Usuarios</h1>
-    <a th:href="@{/usuarios/create}" class="btn btn-outline-primary">Nuevo Usuario</a>
-    <a th:href="@{/usuarios/inactive}" class="btn btn-outline-warning">Usuarios Desactivados</a>
-
-    <div class="card mb-4">
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Apellido</th>
-                <th>NombreUsuario</th>
-                <th>Clave</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="item : ${usuarios}">
-                <td th:text="${item.id}"></td>
-                <td th:text="${item.nombre}"></td>
-                <td th:text="${item.apellido}"></td>
-                <td th:text="${item.nombreUsuario}"></td>
-                <td>*****</td>
-                <td th:text="${item.status == 1} ? 'Activo' : 'Inactivo'"></td>
-                <td>
-                    <a th:href="@{/usuarios/details/{id} (id = ${item.id})}" class="btn btn-outline-secondary">Detalles</a>
-                    <a th:href="@{/usuarios/edit/{id} (id = ${item.id})}" class="btn btn-outline-info">Editar</a>
-                    <a th:href="@{/usuarios/desactivate/{id}(id=${item.id})}" class="btn btn-outline-warning">Desactivar</a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <!--Paginador de registros-->
-    <nav aria-label="Page navigation example">
-        <ul class="pagination">
-            <li class="page-item" th:each="pageNumber : ${pageNumbers}">
-                <a class="page-link" th:href="@{|/usuarios?page=${pageNumber}|}" th:text="${pageNumber}"></a>
-            </li>
-        </ul>
-    </nav>
 </div>
+</html>

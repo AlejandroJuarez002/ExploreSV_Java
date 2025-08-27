@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 
 import java.util.LinkedList;
 import java.util.List;
-
 @Entity
 @Table(name="usuarios")
 public class Usuario {

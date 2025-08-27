@@ -1,48 +1,267 @@
-<html lang="en"
+<html lang="es"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="/layouts/_mainLayout" xmlns:sec="http://www.w3.org/1999/xhtml">
+      layout:decorate="/layouts/_mainLayout"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glider-js@1/glider.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            background-color: gray;
+        }
 
-<div layout:fragment="content">
-    <h1 class="mb-4">Detalles del destino turístico</h1>
-    <div>
-        <hr />
-        <dl class="row">
-            <dt class="col-sm-2">ID</dt>
-            <dd class="col-sm-10" th:text="${destinoTuristico.id}"></dd>
+        .btn-editar {
+            background-color: #0d6efd;
+            color: #fff;
+            border: none;
+            transition: 0.3s ease;
+            font-weight: 600;
+        }
 
-            <dt class="col-sm-2">Nombre</dt>
-            <dd class="col-sm-10" th:text="${destinoTuristico.nombre}"></dd>
+        .btn-editar:hover {
+            background-color: #0b5ed7;
+        }
 
-            <dt class="col-sm-2">Descripción</dt>
-            <dd class="col-sm-10" th:text="${destinoTuristico.descripcion}"></dd>
+        .btn-regresar {
+            background-color: #6c757d;
+            color: #fff;
+            border: none;
+            transition: 0.3s ease;
+            font-weight: 600;
+        }
 
-            <dt class="col-sm-2">Ubicación</dt>
-            <dd class="col-sm-10" th:text="${destinoTuristico.ubicacion}"></dd>
+        .btn-regresar:hover {
+            background-color: #5a6268;
+        }
 
-            <dt class="col-sm-2">Horario</dt>
-            <dd class="col-sm-10" th:text="${destinoTuristico.horario}"></dd>
+        /* Card de detalles */
+        .card-detalles {
+            background-color: #ffffff;
+            border-radius: 1rem;
+            box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+            padding: 1.5rem;
+            width: 100%;
+            max-width: 900px; /* un poco más ancho */
+            margin: 0 auto;
+        }
 
-            <dt class="col-sm-2">Imágenes</dt>
-            <dd class="col-sm-10">
-                <div class="d-flex flex-wrap">
-                    <div th:each="img : ${destinoTuristico.imagenes}" class="p-1">
-                        <img th:if="${img.base64Image != null}"
-                             th:src="'data:image/png;base64,' + ${img.base64Image}"
-                             alt="Imagen destino"
-                             style="width:120px;height:120px;object-fit:cover;border-radius:5px;">
+        .card-header-detalles {
+            background: linear-gradient(90deg, #0a58ca, #1969d4);
+            color: #fff;
+            padding: 1rem;
+            border-radius: 1rem 1rem 0 0;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        /* Título del destino */
+        .destino-titulo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-top: 1.5rem; /* espacio extra con el header */
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        /* Detalles estilo caja */
+        .detalle-box {
+            background-color: #f8f9fa;
+            border-radius: 1rem;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .detalle-row {
+            display: flex;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .detalle-row:last-child {
+            border-bottom: none;
+        }
+
+        .detalle-half {
+            flex: 1;
+            display: flex;
+            padding: 0 0.5rem;
+        }
+
+        .detalle-label {
+            color: #495057;
+            font-weight: 600;
+            margin-right: 0.5rem;
+            min-width: 120px;
+        }
+
+        .detalle-value {
+            color: #212529;
+            font-weight: 400;
+            word-break: break-word;
+        }
+
+        .detalle-descripcion {
+            white-space: pre-line;
+            line-height: 1.6;
+            width: 100%;
+            padding-left: 0.5rem;
+        }
+
+        /* Carrusel */
+        .glider-contain {
+            width: 100%;
+            margin: 1rem auto;
+            position: relative;
+        }
+
+        .imagen-item {
+            width: 90%;
+            height: 350px;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+            margin: 0 auto;
+        }
+
+        .imagen-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Botones carrusel */
+        .glider-prev, .glider-next {
+            background-color: rgba(0,0,0,0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10;
+            font-size: 1.2rem;
+        }
+
+        .glider-prev {
+            left: 10px;
+        }
+
+        .glider-next {
+            right: 10px;
+        }
+
+        /* Contenedor principal */
+        .contenedor-principal {
+            padding: 1.5rem;
+            min-height: 100vh;
+        }
+    </style>
+</head>
+<div layout:fragment="content" class="contenedor-principal">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card-detalles">
+                    <div class="card-header-detalles">
+                        <h4>🌴 Detalles del destino turístico</h4>
+                    </div>
+
+                    <!-- Título -->
+                    <h2 class="destino-titulo" th:text="${destinoTuristico.nombre}"></h2>
+
+                    <!-- Detalles -->
+                    <div class="detalle-box">
+                        <div class="detalle-row">
+                            <span class="detalle-label">📝 Descripción:</span>
+                            <span class="detalle-value detalle-descripcion" th:text="${destinoTuristico.descripcion}"></span>
+                        </div>
+                        <div class="detalle-row">
+                            <div class="detalle-half">
+                                <span class="detalle-label">📍 Ubicación:</span>
+                                <span class="detalle-value" th:text="${destinoTuristico.ubicacion}"></span>
+                            </div>
+                            <div class="detalle-half">
+                                <span class="detalle-label">⏰ Horario:</span>
+                                <span class="detalle-value" th:text="${destinoTuristico.horario}"></span>
+                            </div>
+                        </div>
+                        <div class="detalle-row">
+                            <div class="detalle-half">
+                                <span class="detalle-label">🏛️ Departamento:</span>
+                                <span class="detalle-value" th:text="${destinoTuristico.departamento.nombre}"></span>
+                            </div>
+                            <div class="detalle-half">
+                                <span class="detalle-label">📌 Categoría:</span>
+                                <span class="detalle-value" th:text="${destinoTuristico.categoria.nombre}"></span>
+                            </div>
+                        </div>
+                        <div class="detalle-row">
+                            <span class="detalle-label">🖼️ Imágenes:</span>
+                        </div>
+
+                        <!-- Carrusel -->
+                        <div class="glider-contain">
+                            <div class="glider">
+                                <div th:each="img : ${destinoTuristico.imagenes}" class="glider-slide">
+                                    <div class="imagen-item">
+                                        <img th:if="${img.base64Image != null}"
+                                             th:src="'data:image/png;base64,' + ${img.base64Image}"
+                                             alt="Imagen destino">
+                                    </div>
+                                </div>
+                            </div>
+                            <button aria-label="Previous" class="glider-prev">‹</button>
+                            <button aria-label="Next" class="glider-next">›</button>
+                        </div>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="d-flex justify-content-between mt-3">
+                        <div>
+                            <a th:href="@{/destinoTuristicos}" class="btn btn-regresar px-4 py-2 rounded-3 shadow-sm" sec:authorize="hasRole('ADMIN')">
+                                ⬅ Regresar
+                            </a>
+                            <a th:href="@{/}" class="btn btn-regresar px-4 py-2 rounded-3 shadow-sm" sec:authorize="!hasRole('ADMIN')">
+                                ⬅ Regresar
+                            </a>
+                        </div>
+                        <a th:href="@{/destinoTuristicos/edit/{id}(id=${destinoTuristico.id})}"
+                           class="btn btn-editar px-4 py-2 rounded-3 shadow-sm"
+                           sec:authorize="hasRole('ADMIN')">
+                            ✏️ Editar
+                        </a>
                     </div>
                 </div>
-            </dd>
-        </dl>
-
-        <!-- Botones de acción -->
-        <div class="mt-3">
-            <a th:href="@{/destinoTuristicos/edit/{id}(id=${destinoTuristico.id})}"
-               class="btn btn-outline-info me-2"
-               sec:authorize="hasRole('ADMIN')">Editar</a>
-            <a th:href="@{/}" class="btn btn-secondary">Regresar</a>
+            </div>
         </div>
     </div>
+
+    <!-- JS carrusel -->
+    <script src="https://cdn.jsdelivr.net/npm/glider-js@1/glider.min.js"></script>
+    <script>
+        window.addEventListener('load', function() {
+            new Glider(document.querySelector('.glider'), {
+                slidesToShow: 1,
+                slidesToScroll: 1,
+                draggable: false,
+                arrows: {
+                    prev: '.glider-prev',
+                    next: '.glider-next'
+                },
+                dots: false,
+                scrollLock: true
+            });
+        });
+    </script>
 </div>
 </html>

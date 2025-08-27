@@ -1,10 +1,11 @@
 package org.esfe.controladores;
 
-
 import org.esfe.modelos.DestinoTuristico;
 import org.esfe.modelos.Imagen;
 import org.esfe.modelos.ImagenDTO;
 import org.esfe.repositorios.IDestinoTuristicoRepository;
+import org.esfe.servicios.interfaces.ICategoriaService;
+import org.esfe.servicios.interfaces.IDepartamentoService;
 import org.esfe.servicios.interfaces.IDestinoTuristicoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
@@ -34,6 +35,12 @@ public class DestinoTuristicoController {
     @Autowired
     private IDestinoTuristicoRepository destinoTuristicoRepository;
 
+    @Autowired
+    private IDepartamentoService departamentoServicio; // Asegúrate de tener este servicio
+
+    @Autowired
+    private ICategoriaService categoriaServicio; // Asegúrate de tener este servicio
+
     @GetMapping
     public String index(Model model,
                         @RequestParam("page") Optional<Integer> page,
@@ -41,7 +48,7 @@ public class DestinoTuristicoController {
                         @RequestParam(value = "q", required = false) String q) {
 
         int currentPage = page.orElse(1) - 1;
-        int pageSize = size.orElse(5);
+        int pageSize = size.orElse(6);
         Pageable pageable = PageRequest.of(currentPage, pageSize);
 
         Page<DestinoTuristico> destinos;
@@ -82,13 +89,17 @@ public class DestinoTuristicoController {
     }
 
     @GetMapping("/create")
-    public String create(DestinoTuristico destinoTuristico) {
+    public String create(DestinoTuristico destinoTuristico, Model model) {
+        model.addAttribute("departamentos", departamentoServicio.obtenerTodos());
+        model.addAttribute("categorias", categoriaServicio.obtenerTodos());
         return "destinoTuristico/create";
+
     }
 
     @PostMapping("/save")
     public String save(@ModelAttribute DestinoTuristico destinoTuristico,
                        @RequestParam("imagenFiles") List<MultipartFile> imagenFiles,
+                       @RequestParam(value = "deleteImages", required = false) List<Integer> deleteImages,
                        BindingResult result,
                        Model model,
                        RedirectAttributes attributes) {
@@ -100,16 +111,39 @@ public class DestinoTuristicoController {
         }
 
         try {
-            List<Imagen> listaImagenes = new ArrayList<>();
+            List<Imagen> nuevasImagenes = new ArrayList<>();
+
+            // Procesar imágenes nuevas
             for (MultipartFile file : imagenFiles) {
                 if (!file.isEmpty()) {
                     Imagen img = new Imagen();
                     img.setBytesArrayImage(file.getBytes());
                     img.setDestinoTuristico(destinoTuristico);
-                    listaImagenes.add(img);
+                    nuevasImagenes.add(img);
                 }
             }
-            destinoTuristico.setImagenes(listaImagenes);
+
+            if (destinoTuristico.getId() != null) {
+                // Es edición → obtener el destino existente
+                DestinoTuristico existente = destinoTuristicoService.buscarPorId(destinoTuristico.getId())
+                        .orElseThrow(() -> new IllegalArgumentException("Destino no encontrado"));
+
+                List<Imagen> imagenesFinales = new ArrayList<>(existente.getImagenes());
+
+                // Eliminar imágenes marcadas
+                if (deleteImages != null && !deleteImages.isEmpty()) {
+                    imagenesFinales.removeIf(img -> deleteImages.contains(img.getId()));
+                }
+
+                // Agregar nuevas imágenes (si subieron)
+                imagenesFinales.addAll(nuevasImagenes);
+
+                destinoTuristico.setImagenes(imagenesFinales);
+
+            } else {
+                // Es creación → debe tener al menos las nuevas imágenes
+                destinoTuristico.setImagenes(nuevasImagenes);
+            }
 
         } catch (IOException e) {
             attributes.addFlashAttribute("error", "Error al procesar las imágenes.");
@@ -117,21 +151,45 @@ public class DestinoTuristicoController {
         }
 
         destinoTuristicoService.createOEdit(destinoTuristico);
-        attributes.addFlashAttribute("msg", "Destino turístico creado correctamente.");
+        attributes.addFlashAttribute("msg", "Destino turístico guardado correctamente.");
         return "redirect:/destinoTuristicos";
     }
 
+
     @GetMapping("/details/{Id}")
-    public String details(@PathVariable("Id") Integer Id, Model model){
-        DestinoTuristico destinoTuristico = destinoTuristicoService.buscarPorId (Id).get();
-        model.addAttribute ( "destinoTuristico", destinoTuristico);
+    public String details(@PathVariable("Id") Integer Id, Model model) {
+        DestinoTuristico destinoTuristico = destinoTuristicoService.buscarPorId(Id)
+                .orElseThrow(() -> new IllegalArgumentException("Destino no encontrado"));
+
+        // Forzar la carga de las relaciones
+        if (destinoTuristico.getDepartamento() != null) {
+            destinoTuristico.getDepartamento().getNombre();
+        }
+        if (destinoTuristico.getCategoria() != null) {
+            destinoTuristico.getCategoria().getNombre();
+        }
+
+        model.addAttribute("destinoTuristico", destinoTuristico);
         return "destinoTuristico/details";
     }
 
     @GetMapping("/edit/{Id}")
-    public String edit(@PathVariable("Id") Integer Id, Model model){
-        DestinoTuristico destinoTuristico = destinoTuristicoService.buscarPorId (Id).get();
-        model.addAttribute ("destinoTuristico", destinoTuristico);
+    public String edit(@PathVariable("Id") Integer Id, Model model) {
+        DestinoTuristico destinoTuristico = destinoTuristicoService.buscarPorId(Id)
+                .orElseThrow(() -> new IllegalArgumentException("Destino no encontrado"));
+
+        // Forzar la carga de las relaciones
+        if (destinoTuristico.getDepartamento() != null) {
+            destinoTuristico.getDepartamento().getNombre();
+        }
+        if (destinoTuristico.getCategoria() != null) {
+            destinoTuristico.getCategoria().getNombre();
+        }
+
+        model.addAttribute("departamentos", departamentoServicio.obtenerTodos());
+        model.addAttribute("categorias", categoriaServicio.obtenerTodos());
+        model.addAttribute("destinoTuristico", destinoTuristico);
+
         return "destinoTuristico/edit";
     }
 
@@ -156,5 +214,4 @@ public class DestinoTuristicoController {
         model.addAttribute("q", query);
         return "destinoTuristicos/index"; // usa la misma vista que el listado normal
     }
-
 }

@@ -2,9 +2,38 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="/layouts/_mainLayout">
-
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Estilo para la paginación */
+        .pagination .page-link {
+            color: #5a6c7d;
+            background-color: #fff;
+            border: 1px solid #eae4dc;
+            border-radius: 50% !important;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 4px;
+            transition: all 0.3s ease;
+        }
+        /* Efecto hover para la paginación (páginas INACTIVAS) */
+        .pagination .page-link:hover {
+            background-color: #6c757d;
+            color: #fff;
+            border-color: #6c757d;
+        }
+        /* Paginación activa */
+        .pagination .page-item.active .page-link {
+            background-color: #2c3e50;
+            color: #fff;
+            border-color: #2c3e50;
+        }
+    </style>
+</head>
 <div layout:fragment="content">
-
     <!-- Mensajes -->
     <div th:if="${msg != null}">
         <script>
@@ -24,10 +53,8 @@
             });
         </script>
     </div>
-
     <h1>Destinos turísticos</h1>
-    <a th:href="@{/destinoTuristicos/create}" class="btn btn-outline-primary mb-3">Nuevo destino</a>
-
+    <a th:href="@{/destinoTuristicos/create}" class="btn btn-primary mb-3">Nuevo destino</a>
     <div class="row row-cols-1 row-cols-md-3 g-4">
         <div class="col" th:each="item : ${destinoTuristicos}">
             <div class="card h-100">
@@ -38,25 +65,27 @@
                 <img th:if="${#lists.isEmpty(item.imagenes)}"
                      src="/images/placeholder.png"
                      class="card-img-top" style="height:200px; object-fit: cover;" alt="Imagen no disponible">
-
                 <div class="card-body">
                     <h5 class="card-title" th:text="${item.destino.nombre}">Nombre destino</h5>
-                    <p class="card-text" th:text="${item.destino.descripcion}">Descripción del destino...</p>
+                    <!-- Ubicación, Departamento y Categoría -->
+                    <p class="card-text">
+                        <strong>Ubicación:</strong> <span th:text="${item.destino.ubicacion}"></span><br>
+                        <strong>Departamento:</strong> <span th:text="${item.destino.departamento.nombre}"></span><br>
+                        <strong>Categoría:</strong> <span th:text="${item.destino.categoria.nombre}"></span>
+                    </p>
                 </div>
-
                 <div class="card-footer d-flex gap-1">
                     <a th:href="@{/destinoTuristicos/details/{id}(id=${item.destino.id})}"
-                       class="btn btn-outline-secondary btn-sm">Detalles</a>
+                       class="btn btn-secondary btn-sm">Detalles</a>
                     <a th:href="@{/destinoTuristicos/edit/{id}(id=${item.destino.id})}"
-                       class="btn btn-outline-info btn-sm">Editar</a>
+                       class="btn btn-info btn-sm">Editar</a>
                     <a th:href="@{/destinoTuristicos/remove/{id}(id=${item.destino.id})}"
-                       class="btn btn-outline-danger btn-sm"
+                       class="btn btn-danger btn-sm"
                        onclick="return confirm('¿Seguro que deseas eliminar este destino?');">Eliminar</a>
                 </div>
             </div>
         </div>
     </div>
-
     <!-- Paginación -->
     <nav aria-label="Page navigation example" class="mt-4">
         <ul class="pagination justify-content-center">
@@ -67,5 +96,5 @@
             </li>
         </ul>
     </nav>
-
 </div>
+</html>

@@ -4,6 +4,8 @@ package org.esfe.modelos;
 import groovy.lang.GString;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 import java.util.List;
 
 @Entity
@@ -14,16 +16,28 @@ public class DestinoTuristico {
     private Integer id;
 
     @NotBlank(message = "El nombre es requerido")
+    @Size(max = 100, message = "La nombre no puede tener más de 100 caracteres")
     private String nombre;
 
     @NotBlank (message = "La descripcion es requerida")
+    @Size(max = 2500, message = "La descripción no puede tener más de 5000 caracteres")
     private String descripcion;
 
     @NotBlank (message = "La ubicacion es requerida")
+    @Size(max = 300, message = "La ubicación no puede tener más de 300 caracteres")
     private String ubicacion;
 
     @NotBlank (message = "El horario es requerido")
+    @Size(max = 100, message = "El horario no puede tener más de 100 caracteres")
     private String horario;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "departamento_id", nullable = false)
+    private Departamento departamento;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "categoria_id", nullable = false)
+    private Categoria categoria;
 
     // Relación con Imagen (foránea en Imagen)
     @OneToMany(mappedBy = "destinoTuristico", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -75,5 +89,21 @@ public class DestinoTuristico {
 
     public void setImagenes(List<Imagen> imagenes) {
         this.imagenes = imagenes;
+    }
+
+    public Departamento getDepartamento() {
+        return departamento;
+    }
+
+    public void setDepartamento(Departamento departamento) {
+        this.departamento = departamento;
+    }
+
+    public Categoria getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
     }
 }
