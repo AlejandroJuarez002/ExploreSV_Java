@@ -40,7 +40,10 @@ public class DestinoTuristico {
     private Categoria categoria;
 
     // Relación con Imagen (foránea en Imagen)
-    @OneToMany(mappedBy = "destinoTuristico", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "destinoTuristico",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.EAGER) //Permite q las imagenes se muestren en cualquier ejecucion de usuarios
     private List<Imagen> imagenes;
 
     public Integer getId() {
