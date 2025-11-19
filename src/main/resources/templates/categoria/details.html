@@ -8,6 +8,7 @@
         font-family: 'Poppins', sans-serif;
         margin: 0;
         overflow: hidden;
+        background-color: gray;
     }
 
     /* Botones personalizados */
@@ -73,8 +74,7 @@
 </head>
 
 <div layout:fragment="content"
-     class="container-fluid min-vh-100 d-flex align-items-center justify-content-center overflow-hidden"
-     th:style="'background: url(' + @{/assets/img/fondo1.png} + ') no-repeat center center fixed; background-size: cover; position: relative;'">
+     class="container-fluid min-vh-100 d-flex align-items-center justify-content-center overflow-hidden">
 
   <!-- Capa translúcida -->
   <div style="position: absolute; top:0; left:0; width:100%; height:100%; background-color: rgba(255,255,255,0.7);"></div>
@@ -103,9 +103,6 @@
         <div class="d-flex justify-content-between mt-4">
           <a th:href="@{/categorias}" class="btn btn-regresar px-4 py-2 rounded-3 shadow-sm">
             ⬅ Regresar
-          </a>
-          <a th:href="@{/categorias/edit/{id}(id=${categoria.id})}" class="btn btn-editar px-4 py-2 rounded-3 shadow-sm">
-            ✏️ Editar
           </a>
         </div>
       </div>

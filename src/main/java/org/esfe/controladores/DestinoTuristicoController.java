@@ -48,7 +48,7 @@ public class DestinoTuristicoController {
                         @RequestParam(value = "q", required = false) String q) {
 
         int currentPage = page.orElse(1) - 1;
-        int pageSize = size.orElse(10);
+        int pageSize = size.orElse(6);
         Pageable pageable = PageRequest.of(currentPage, pageSize);
 
         Page<DestinoTuristico> destinos;
@@ -97,64 +97,46 @@ public class DestinoTuristicoController {
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute DestinoTuristico destinoTuristico,
-                       @RequestParam("imagenFiles") List<MultipartFile> imagenFiles,
-                       @RequestParam(value = "deleteImages", required = false) List<Integer> deleteImages,
-                       BindingResult result,
-                       Model model,
-                       RedirectAttributes attributes) {
+    public String save(
+            @ModelAttribute DestinoTuristico destinoTuristico,
+            @RequestParam("imagenFiles") List<MultipartFile> imagenFiles,
+            BindingResult result,
+            RedirectAttributes attributes,
+            Model model) {
 
         if (result.hasErrors()) {
-            model.addAttribute(destinoTuristico);
-            attributes.addFlashAttribute("error", "No se pudo guardar debido a un error.");
+            model.addAttribute("departamentos", departamentoServicio.obtenerTodos());
+            model.addAttribute("categorias", categoriaServicio.obtenerTodos());
             return "destinoTuristico/create";
         }
 
         try {
-            List<Imagen> nuevasImagenes = new ArrayList<>();
+            // 1️⃣ Guardar destino primero
+            DestinoTuristico destinoGuardado =
+                    destinoTuristicoService.createOEdit(destinoTuristico);
 
-            // Procesar imágenes nuevas
+            // 2️⃣ Procesar imágenes
             for (MultipartFile file : imagenFiles) {
                 if (!file.isEmpty()) {
-                    Imagen img = new Imagen();
-                    img.setBytesArrayImage(file.getBytes());
-                    img.setDestinoTuristico(destinoTuristico);
-                    nuevasImagenes.add(img);
+                    Imagen imagen = new Imagen();
+                    imagen.setBytesArrayImage(file.getBytes());
+                    imagen.setDestinoTuristico(destinoGuardado);
+
+                    destinoGuardado.getImagenes().add(imagen);
                 }
             }
 
-            if (destinoTuristico.getId() != null) {
-                // Es edición → obtener el destino existente
-                DestinoTuristico existente = destinoTuristicoService.buscarPorId(destinoTuristico.getId())
-                        .orElseThrow(() -> new IllegalArgumentException("Destino no encontrado"));
+            /* 3️⃣ Guardar todo otra vez */
+            destinoTuristicoService.createOEdit(destinoGuardado);
 
-                List<Imagen> imagenesFinales = new ArrayList<>(existente.getImagenes());
-
-                // Eliminar imágenes marcadas
-                if (deleteImages != null && !deleteImages.isEmpty()) {
-                    imagenesFinales.removeIf(img -> deleteImages.contains(img.getId()));
-                }
-
-                // Agregar nuevas imágenes (si subieron)
-                imagenesFinales.addAll(nuevasImagenes);
-
-                destinoTuristico.setImagenes(imagenesFinales);
-
-            } else {
-                // Es creación → debe tener al menos las nuevas imágenes
-                destinoTuristico.setImagenes(nuevasImagenes);
-            }
-
-        } catch (IOException e) {
-            attributes.addFlashAttribute("error", "Error al procesar las imágenes.");
+        } catch (Exception e) {
+            attributes.addFlashAttribute("error", "Error al guardar las imágenes.");
             return "destinoTuristico/create";
         }
 
-        destinoTuristicoService.createOEdit(destinoTuristico);
         attributes.addFlashAttribute("msg", "Destino turístico guardado correctamente.");
         return "redirect:/destinoTuristicos";
     }
-
 
     @GetMapping("/details/{Id}")
     public String details(@PathVariable("Id") Integer Id, Model model) {
