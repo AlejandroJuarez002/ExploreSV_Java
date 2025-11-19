@@ -22,13 +22,13 @@ import java.util.stream.IntStream;
 
 @Controller
 @RequestMapping("/home")
-public class HomeController {
 
+public class HomeController {
 
     @Autowired
     private IDestinoTuristicoService destinoTuristicoService;
 
-    @GetMapping({"/", "/home"})
+    @GetMapping({"", "/"})
     public String index(Model model,
                         @RequestParam("page") Optional<Integer> page,
                         @RequestParam("size") Optional<Integer> size) {
