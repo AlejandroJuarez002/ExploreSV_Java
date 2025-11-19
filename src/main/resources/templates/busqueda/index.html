@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="/layouts/_mainLayout">
+<div layout:fragment="content">
+    <h1>Buscar Destinos Turísticos</h1>
+
+    <!-- Formulario de búsqueda -->
+    <form action="/busqueda" method="get" class="mb-4">
+        <div class="row g-3 align-items-end">
+            <!-- Campo de texto para el nombre -->
+            <div class="col-md-4">
+                <label for="nombre" class="form-label">Nombre</label>
+                <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Nombre del destino" th:value="${nombre}" />
+            </div>
+
+            <!-- Combo box para categoría -->
+            <div class="col-md-3">
+                <label for="categoria" class="form-label">Categoría</label>
+                <select id="categoria" name="categoria" class="form-select">
+                    <option value="" th:text="'Todas las categorías'"></option>
+                    <option th:each="cat : ${categorias}" th:value="${cat.nombre}" th:text="${cat.nombre}" th:selected="${categoria == cat.nombre}"></option>
+                </select>
+            </div>
+
+            <!-- Combo box para departamento -->
+            <div class="col-md-3">
+                <label for="departamento" class="form-label">Departamento</label>
+                <select id="departamento" name="departamento" class="form-select">
+                    <option value="" th:text="'Todos los departamentos'"></option>
+                    <option th:each="depto : ${departamentos}" th:value="${depto.nombre}" th:text="${depto.nombre}" th:selected="${departamento == depto.nombre}"></option>
+                </select>
+            </div>
+
+            <!-- Botón de búsqueda -->
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-outline-primary w-100">Buscar</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Resultados -->
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        <div class="col" th:each="destino : ${destinos}">
+            <div class="card h-100">
+                <!-- Imagen principal -->
+                <img th:if="${!destino.imagenes.isEmpty()}"
+                     th:src="'data:image/png;base64,' + ${destino.imagenes[0].base64Image}"
+                     class="card-img-top" style="height:200px; object-fit: cover;" alt="Imagen destino">
+                <img th:if="${destino.imagenes.isEmpty()}"
+                     src="/images/placeholder.png"
+                     class="card-img-top" style="height:200px; object-fit: cover;" alt="Imagen no disponible">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${destino.nombre}">Nombre destino</h5>
+                    <p class="card-text">
+                        <strong>Ubicación:</strong> <span th:text="${destino.ubicacion}"></span><br>
+                        <strong>Departamento:</strong> <span th:text="${destino.departamento.nombre}"></span><br>
+                        <strong>Categoría:</strong> <span th:text="${destino.categoria.nombre}"></span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mensaje si no hay resultados -->
+    <div th:if="${destinos.isEmpty()}" class="alert alert-info mt-4">
+        No se encontraron destinos con los filtros aplicados.
+    </div>
+</div>
+</html>
