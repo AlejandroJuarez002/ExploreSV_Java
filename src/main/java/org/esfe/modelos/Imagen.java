@@ -6,12 +6,14 @@ import java.util.Base64;
 @Entity
 @Table(name = "imagenes")
 public class Imagen {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Lob
-    @Column(name = "imagen_bytes", columnDefinition = "LONGBLOB")
+    @Column(name = "imagen_bytes")
+    //@Column(name = "imagen_bytes", columnDefinition = "VARBINARY(MAX)")
     private byte[] bytesArrayImage;
 
     @ManyToOne(fetch = FetchType.LAZY)
