@@ -12,4 +12,3 @@ public class LoginController {
         return "login/index"; // buscará templates/login/index.html
     }
 }
-

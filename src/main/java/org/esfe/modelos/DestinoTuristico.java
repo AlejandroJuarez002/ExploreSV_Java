@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -40,8 +41,12 @@ public class DestinoTuristico {
     private Categoria categoria;
 
     // Relación con Imagen (foránea en Imagen)
-    @OneToMany(mappedBy = "destinoTuristico", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Imagen> imagenes;
+    @OneToMany(
+            mappedBy = "destinoTuristico",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.EAGER) //Permite q las imagenes se muestren en cualquier ejecucion de usuarios
+    private List<Imagen> imagenes= new ArrayList<>();
 
     public Integer getId() {
         return id;
