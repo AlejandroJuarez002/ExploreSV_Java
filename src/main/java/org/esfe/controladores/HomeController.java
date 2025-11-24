@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
@@ -20,13 +21,14 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Controller
-public class HomeController {
+@RequestMapping("/home")
 
+public class HomeController {
 
     @Autowired
     private IDestinoTuristicoService destinoTuristicoService;
 
-    @GetMapping({"/", "/home"})
+    @GetMapping({"", "/"})
     public String index(Model model,
                         @RequestParam("page") Optional<Integer> page,
                         @RequestParam("size") Optional<Integer> size) {
