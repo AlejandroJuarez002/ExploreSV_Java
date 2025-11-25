@@ -5,7 +5,7 @@
 <head>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        /* Estilo para la paginación */
+        /* Paginación */
         .pagination .page-link {
             color: #5a6c7d;
             background-color: #fff;
@@ -19,13 +19,13 @@
             margin: 0 4px;
             transition: all 0.3s ease;
         }
-        /* Efecto hover para la paginación (páginas INACTIVAS) */
+
         .pagination .page-link:hover {
             background-color: #6c757d;
             color: #fff;
             border-color: #6c757d;
         }
-        /* Paginación activa */
+
         .pagination .page-item.active .page-link {
             background-color: #2c3e50;
             color: #fff;
@@ -53,6 +53,7 @@
             });
         </script>
     </div>
+
     <h1>Destinos turísticos</h1>
     <a th:href="@{/destinoTuristicos/create}" class="btn btn-primary mb-3">Nuevo destino</a>
     <div class="row row-cols-1 row-cols-md-3 g-4">
@@ -86,10 +87,12 @@
             </div>
         </div>
     </div>
+
     <!-- Paginación -->
     <nav aria-label="Page navigation example" class="mt-4">
         <ul class="pagination justify-content-center">
-            <li class="page-item" th:each="pageNumber : ${pageNumbers}">
+            <li class="page-item" th:each="pageNumber : ${pageNumbers}"
+                th:classappend="${pageNumber == currentPage} ? 'active' : ''">
                 <a class="page-link"
                    th:href="@{|/destinoTuristicos?page=${pageNumber}${q != null ? '&q=' + q : ''}|}"
                    th:text="${pageNumber}"></a>

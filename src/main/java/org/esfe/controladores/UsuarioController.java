@@ -39,11 +39,15 @@ public class UsuarioController {
     private String index(Model model,
                          @RequestParam("page") Optional<Integer> page,
                          @RequestParam("size") Optional<Integer> size) {
+
         int currentPage = page.orElse(1) - 1;
-        int pageSize = size.orElse(5);
+        int pageSize = size.orElse(6);
+
         Pageable pageable = PageRequest.of(currentPage, pageSize);
         Page<Usuario> usuarios = usuarioService.buscarPorStatus(1, pageable);
+
         model.addAttribute("usuarios", usuarios);
+
         int totalPages = usuarios.getTotalPages();
         if (totalPages > 0) {
             List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
@@ -51,6 +55,8 @@ public class UsuarioController {
                     .collect(Collectors.toList());
             model.addAttribute("pageNumbers", pageNumbers);
         }
+        model.addAttribute("currentPage", currentPage + 1);
+
         return "usuario/index";
     }
 
@@ -164,11 +170,15 @@ public class UsuarioController {
     public String inactiveUsers(Model model,
                                 @RequestParam("page") Optional<Integer> page,
                                 @RequestParam("size") Optional<Integer> size) {
+
         int currentPage = page.orElse(1) - 1;
-        int pageSize = size.orElse(5);
+        int pageSize = size.orElse(6);
+
         Pageable pageable = PageRequest.of(currentPage, pageSize);
         Page<Usuario> usuarios = usuarioService.buscarPorStatus(0, pageable);
+
         model.addAttribute("usuarios", usuarios);
+
         int totalPages = usuarios.getTotalPages();
         if (totalPages > 0) {
             List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
@@ -176,6 +186,8 @@ public class UsuarioController {
                     .collect(Collectors.toList());
             model.addAttribute("pageNumbers", pageNumbers);
         }
+        model.addAttribute("currentPage", currentPage + 1);
+
         return "usuario/inactive_index";
     }
 

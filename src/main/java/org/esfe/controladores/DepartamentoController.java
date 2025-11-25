@@ -25,12 +25,16 @@ public class DepartamentoController {
     private IDepartamentoService departamentoService;
 
     @GetMapping
-    public String index(Model model, @RequestParam("page") Optional<Integer> page, @RequestParam("size") Optional<Integer> size){
-        int currentPage = page.orElse(1) - 1; //si no esta seteado se asigna 0
-        int pageSize = size.orElse(7); //tamano de la pagina se asigna 5
-        Pageable pageable = PageRequest.of(currentPage, pageSize);
+    public String index(Model model,
+                        @RequestParam("page") Optional<Integer> page,
+                        @RequestParam("size") Optional<Integer> size){
 
+        int currentPage = page.orElse(1) - 1;
+        int pageSize = size.orElse(7);
+
+        Pageable pageable = PageRequest.of(currentPage, pageSize);
         Page<Departamento> departamentos = departamentoService.buscarTodosPaginados(pageable);
+
         model.addAttribute("departamentos", departamentos);
 
         int totalPages = departamentos.getTotalPages();
@@ -40,6 +44,7 @@ public class DepartamentoController {
                     .collect(Collectors.toList());
             model.addAttribute("pageNumbers", pageNumbers);
         }
+        model.addAttribute("currentPage", currentPage + 1);
 
         return "departamento/index";
     }
