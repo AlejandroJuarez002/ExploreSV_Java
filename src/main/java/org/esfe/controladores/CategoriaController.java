@@ -25,12 +25,16 @@ public class CategoriaController {
     private ICategoriaService categoriaService;
 
     @GetMapping
-    public String index(Model model, @RequestParam("page") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
-        int currentPage = page.orElse(1) - 1; // por defecto página 0
-        int pageSize = size.orElse(5); // por defecto tamaño de página = 5
-        Pageable pageable = PageRequest.of(currentPage, pageSize);
+    public String index(Model model,
+                        @RequestParam("page") Optional<Integer> page,
+                        @RequestParam("size") Optional<Integer> size) {
 
+        int currentPage = page.orElse(1) - 1;
+        int pageSize = size.orElse(7);
+
+        Pageable pageable = PageRequest.of(currentPage, pageSize);
         Page<Categoria> categorias = categoriaService.buscarTodosPaginados(pageable);
+
         model.addAttribute("categorias", categorias);
 
         int totalPages = categorias.getTotalPages();
@@ -40,6 +44,7 @@ public class CategoriaController {
                     .collect(Collectors.toList());
             model.addAttribute("pageNumbers", pageNumbers);
         }
+        model.addAttribute("currentPage", currentPage + 1);
 
         return "categoria/index";
     }

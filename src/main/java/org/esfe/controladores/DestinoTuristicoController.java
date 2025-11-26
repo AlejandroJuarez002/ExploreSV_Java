@@ -49,8 +49,8 @@ public class DestinoTuristicoController {
 
         int currentPage = page.orElse(1) - 1;
         int pageSize = size.orElse(6);
-        Pageable pageable = PageRequest.of(currentPage, pageSize);
 
+        Pageable pageable = PageRequest.of(currentPage, pageSize);
         Page<DestinoTuristico> destinos;
 
         if (q != null && !q.isEmpty()) {
@@ -84,6 +84,7 @@ public class DestinoTuristicoController {
             List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages).boxed().collect(Collectors.toList());
             model.addAttribute("pageNumbers", pageNumbers);
         }
+        model.addAttribute("currentPage", currentPage + 1);
 
         return "destinoTuristico/index";
     }

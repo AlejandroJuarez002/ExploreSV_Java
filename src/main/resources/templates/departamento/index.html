@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="/layouts/_mainLayout">
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layouts/_mainLayout">
 
 <head>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -150,13 +152,13 @@
           margin: 0 4px;
           transition: all 0.3s ease;
         }
-        /* Efecto hover para la paginación (páginas INACTIVAS) */
+
         .pagination .page-link:hover {
           background-color: #6c757d;
           color: #fff;
           border-color: #6c757d;
         }
-        /* Paginación activa */
+
         .pagination .page-item.active .page-link {
           background-color: #2c3e50;
           color: #fff;
@@ -227,10 +229,14 @@
                     </table>
                 </div>
 
+                <!-- Paginación -->
                 <nav aria-label="Page navigation example" class="mt-3">
                     <ul class="pagination justify-content-center">
-                        <li class="page-item" th:each="pageNumber : ${pageNumbers}">
-                            <a class="page-link" th:href="@{|/departamentos?page=${pageNumber}|}" th:text="${pageNumber}"></a>
+                        <li class="page-item" th:each="pageNumber : ${pageNumbers}"
+                            th:classappend="${pageNumber == currentPage} ? 'active' : ''">
+                            <a class="page-link"
+                               th:href="@{|/departamentos?page=${pageNumber}|}"
+                               th:text="${pageNumber}"></a>
                         </li>
                     </ul>
                 </nav>

@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
@@ -20,19 +21,20 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Controller
-public class HomeController {
+@RequestMapping("/home")
 
+public class HomeController {
 
     @Autowired
     private IDestinoTuristicoService destinoTuristicoService;
 
-    @GetMapping({"/", "/home"})
+    @GetMapping({"", "/"})
     public String index(Model model,
                         @RequestParam("page") Optional<Integer> page,
                         @RequestParam("size") Optional<Integer> size) {
 
-        int currentPage = page.orElse(1) - 1;  // Spring maneja 0-based index
-        int pageSize = size.orElse(6);         // cantidad de destinos por página
+        int currentPage = page.orElse(1) - 1;
+        int pageSize = size.orElse(6);
 
         Pageable pageable = PageRequest.of(currentPage, pageSize);
         Page<DestinoTuristico> destinos = destinoTuristicoService.buscarTodosPaginados(pageable);
@@ -54,7 +56,6 @@ public class HomeController {
 
         model.addAttribute("destinoTuristicos", destinosDTO);
 
-        // Generar lista de páginas
         int totalPages = destinos.getTotalPages();
         if (totalPages > 0) {
             List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
@@ -63,6 +64,7 @@ public class HomeController {
             model.addAttribute("pageNumbers", pageNumbers);
         }
         model.addAttribute("currentPage", currentPage + 1);
+
         return "home/index";
     }
 }

@@ -9,6 +9,6 @@ public class LoginController {
 
     @GetMapping("/login")
     public String login() {
-        return "login/index"; // buscará templates/login/index.html
+        return "login/index";
     }
 }
