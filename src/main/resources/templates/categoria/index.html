@@ -3,183 +3,180 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="layouts/_mainLayout">
 <head>
-  <!-- Fuente Poppins -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <style>
-    .content-wrapper, .card-custom, .table, .btn, h2 {
-      font-family: 'Poppins', sans-serif;
-    }
+      <style>
+        .content-wrapper, .card-custom, .table, .btn, h2 {
+          font-family: 'Poppins', sans-serif;
+        }
 
-    .container-fluid.departamento-container {
-      background-size: cover;
-    }
+        .container-fluid.departamento-container {
+          background-size: cover;
+        }
 
-    .overlay-translucido {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(255, 255, 255, 0.75);
-      z-index: 1;
-    }
+        .overlay-translucido {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(255, 255, 255, 0.75);
+          z-index: 1;
+        }
 
-    .content-wrapper {
-      position: relative;
-      z-index: 2;
-    }
+        .content-wrapper {
+          position: relative;
+          z-index: 2;
+        }
 
-    /* Botón "Nueva categoría" */
-    .btn-nuevo {
-      background-color: #4facfe;
-      color: white;
-      border: 0;
-      padding: 0.5rem 1rem !important;
-      font-size: 0.9rem !important;
-    }
+        /* Botón "Nueva categoría" */
+        .btn-nuevo {
+          background-color: #4facfe;
+          color: white;
+          border: 0;
+          padding: 0.5rem 1rem !important;
+          font-size: 0.9rem !important;
+        }
 
-    .btn-nuevo:hover {
-      background-color: #329af0 !important;
-      color: white !important;
-    }
+        .btn-nuevo:hover {
+          background-color: #329af0 !important;
+          color: white !important;
+        }
 
-    /* Botones de acción con color sólido */
-    .btn-detalles {
-      background-color: #6c757d;
-      color: white !important;
-      border: none;
-      border-radius: 6px;
-      padding: 0.25rem 0.5rem;
-      font-size: 0.875rem;
-      margin: 0 2px;
-    }
+        /* Botones de acción con color sólido */
+        .btn-detalles {
+          background-color: #6c757d;
+          color: white !important;
+          border: none;
+          border-radius: 6px;
+          padding: 0.25rem 0.5rem;
+          font-size: 0.875rem;
+          margin: 0 2px;
+        }
 
-    .btn-detalles:hover {
-      background-color: #5a6268 !important;
-    }
+        .btn-detalles:hover {
+          background-color: #5a6268 !important;
+        }
 
-    .btn-editar {
-      background-color: #17a2b8;
-      color: white !important;
-      border: none;
-      border-radius: 6px;
-      padding: 0.25rem 0.5rem;
-      font-size: 0.875rem;
-      margin: 0 2px;
-    }
+        .btn-editar {
+          background-color: #17a2b8;
+          color: white !important;
+          border: none;
+          border-radius: 6px;
+          padding: 0.25rem 0.5rem;
+          font-size: 0.875rem;
+          margin: 0 2px;
+        }
 
-    .btn-editar:hover {
-      background-color: #138496 !important;
-    }
+        .btn-editar:hover {
+          background-color: #138496 !important;
+        }
 
-    .btn-eliminar {
-      background-color: #dc3545;
-      color: white !important;
-      border: none;
-      border-radius: 6px;
-      padding: 0.25rem 0.5rem;
-      font-size: 0.875rem;
-      margin: 0 2px;
-    }
+        .btn-eliminar {
+          background-color: #dc3545;
+          color: white !important;
+          border: none;
+          border-radius: 6px;
+          padding: 0.25rem 0.5rem;
+          font-size: 0.875rem;
+          margin: 0 2px;
+        }
 
-    .btn-eliminar:hover {
-      background-color: #c82333 !important;
-    }
+        .btn-eliminar:hover {
+          background-color: #c82333 !important;
+        }
 
-    .card-custom {
-      background-color: #ffffff;
-    }
+        .card-custom {
+          background-color: #ffffff;
+        }
 
-    /* Columna de acciones más compacta */
-    .acciones-col {
-      width: 1%;
-      white-space: nowrap;
-    }
+        /* Columna de acciones más compacta */
+        .acciones-col {
+          width: 1%;
+          white-space: nowrap;
+        }
 
-    /* Ajuste del contenedor de la tabla */
-    .table-container {
-      overflow-x: auto;
-    }
+        /* Ajuste del contenedor de la tabla */
+        .table-container {
+          overflow-x: auto;
+        }
 
-    /* Reducir ancho del contenedor */
-    .card.shadow-lg {
-      max-width: 900px;
-      margin: 0 auto;
-    }
+        /* Reducir ancho del contenedor */
+        .card.shadow-lg {
+          max-width: 900px;
+          margin: 0 auto;
+        }
 
-    /* Reducir ancho columna ID */
-    .table th:nth-child(1),
-    .table td:nth-child(1) {
-      max-width: 8px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
+        /* Reducir ancho columna ID */
+        .table th:nth-child(1),
+        .table td:nth-child(1) {
+          max-width: 8px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
 
-    /* Reducir ancho columna Nombre */
-    .table th:nth-child(2),
-    .table td:nth-child(2) {
-      max-width: 20px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
+        /* Reducir ancho columna Nombre */
+        .table th:nth-child(2),
+        .table td:nth-child(2) {
+          max-width: 20px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
 
-    /* Paginación */
-    .pagination .page-link {
-      color: #5a6c7d;
-      background-color: #fff;
-      border: 1px solid #eae4dc;
-      border-radius: 50% !important;
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 4px;
-      transition: all 0.3s ease;
-    }
+        /* Paginación */
+        .pagination .page-link {
+            color: #5a6c7d;
+            background-color: #fff;
+            border: 1px solid #eae4dc;
+            border-radius: 50% !important;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 4px;
+            transition: all 0.3s ease;
+        }
 
-    /* Efecto hover para la paginación (páginas INACTIVAS) */
-    .pagination .page-link:hover {
-      background-color: #6c757d;
-      color: #fff;
-      border-color: #6c757d;
-    }
+        .pagination .page-link:hover {
+            background-color: #6c757d;
+            color: #fff;
+            border-color: #6c757d;
+        }
 
-    /* Paginación activa */
-    .pagination .page-item.active .page-link {
-      background-color: #2c3e50;
-      color: #fff;
-      border-color: #2c3e50;
-    }
+        .pagination .page-item.active .page-link {
+            background-color: #2c3e50;
+            color: #fff;
+            border-color: #2c3e50;
+        }
 
-    /* Ajustes para responsividad */
-    @media (max-width: 768px) {
-      .table-container {
-        width: 100%;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-      }
-      .table {
-        min-width: 600px;
-        white-space: nowrap;
-      }
-      /* Botones de acciones apilados verticalmente */
-      .acciones-col {
-        width: 120px;
-        white-space: normal;
-      }
-      .btn-detalles,
-      .btn-editar,
-      .btn-eliminar {
-        display: block;
-        width: 100%;
-        margin-bottom: 0.3rem;
-        text-align: center;
-      }
-    }
-  </style>
+        /* Ajustes para responsividad */
+        @media (max-width: 768px) {
+          .table-container {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+          }
+          .table {
+            min-width: 600px;
+            white-space: nowrap;
+          }
+          /* Botones de acciones apilados verticalmente */
+          .acciones-col {
+            width: 120px;
+            white-space: normal;
+          }
+          .btn-detalles,
+          .btn-editar,
+          .btn-eliminar {
+            display: block;
+            width: 100%;
+            margin-bottom: 0.3rem;
+            text-align: center;
+          }
+        }
+      </style>
 </head>
 
 <div layout:fragment="content" class="container-fluid p-5 position-relative departamento-container">
@@ -248,8 +245,11 @@
         <!-- Paginación -->
         <nav aria-label="Page navigation example" class="mt-3">
           <ul class="pagination justify-content-center">
-            <li class="page-item" th:each="pageNumber : ${pageNumbers}">
-              <a class="page-link" th:href="@{|/categorias?page=${pageNumber}|}" th:text="${pageNumber}"></a>
+            <li class="page-item" th:each="pageNumber : ${pageNumbers}"
+                th:classappend="${pageNumber == currentPage} ? 'active' : ''">
+              <a class="page-link"
+                 th:href="@{|/categorias?page=${pageNumber}|}"
+                 th:text="${pageNumber}"></a>
             </li>
           </ul>
         </nav>
