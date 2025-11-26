@@ -116,7 +116,30 @@ public class UsuarioController {
 
         usuario.setStatus(1);
         usuarioService.crearOEditar(usuario);
-        attributes.addFlashAttribute("msg", usuario.getId() == null ? "Usuario creado correctamente." : "Usuario editado correctamente.");
+
+        // Verificar ANTES de guardar si se está editando el usuario logueado
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String usernameLogeado = auth.getName();
+
+        Optional<Usuario> usuarioActivoOpt = usuarioService.buscarPorNombreUsuario(usernameLogeado);
+
+        boolean esElMismo = usuarioActivoOpt.isPresent()
+                && usuario.getId() != null
+                && usuarioActivoOpt.get().getId().equals(usuario.getId());
+
+        // Guardar
+        usuarioService.crearOEditar(usuario);
+
+        // Si estaba editando su propio usuario, cerrar sesión
+        if (esElMismo) {
+            SecurityContextHolder.getContext().setAuthentication(null);
+            return "redirect:/login?logout";
+        }
+
+        attributes.addFlashAttribute("msg", usuario.getId() == null ?
+                "Usuario creado correctamente." :
+                "Usuario editado correctamente.");
+
         return "redirect:/usuarios";
     }
 

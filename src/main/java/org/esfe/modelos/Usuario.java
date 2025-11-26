@@ -19,6 +19,7 @@ public class Usuario {
     private String apellido;
 
     @NotBlank(message = "El nombre de usuario de requerido")
+    @Column(name = "nombre_usuario")
     private String nombreUsuario;
 
     @NotBlank(message = "La contraseña es requerida")
