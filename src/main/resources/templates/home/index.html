@@ -151,13 +151,24 @@
         color: #fff;
         border-color: #2c3e50;
     }
+
+    .imagen-home {
+        height: 200px;          /* altura fija como en Destinos Turísticos */
+        width: 100%;            /* ocupa el ancho de la card */
+        object-fit: cover;      /* recorta proporcionalmente */
+        object-position: center;/* centra el recorte */
+        border-top-left-radius: .25rem;
+        border-top-right-radius: .25rem;
+    }
     </style>
 </head>
 
 <body>
 <div layout:fragment="content">
     <!-- Encabezado -->
-    <h1 class="text-center" style="font-family: 'Poppins', serif; font-weight: 600; margin-top: 2rem; margin-bottom: 2rem; color: #2c3e50; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);">Destinos Turísticos.</h1>
+    <h1 class="text-center" style="font-family: 'Poppins',
+    serif; font-weight: 600; margin-top: 2rem; margin-bottom: 2rem;
+    color: #2c3e50; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);">Destinos Turísticos.</h1>
 
     <!-- Contenedor de tarjetas -->
     <div class="row">
@@ -169,7 +180,7 @@
                     <img
                             th:if="${destino['imagenes'].size() > 0 and destino['imagenes'][0].base64Image != null}"
                             th:src="'data:image/png;base64,' + ${destino['imagenes'][0].base64Image}"
-                            class="card-img-top"
+                            class="card-img-top imagen-home"
                             alt="Imagen destino">
                 </a>
                 <!-- Cuerpo de la tarjeta -->
@@ -181,15 +192,14 @@
                     </h5>
                     <!-- Información del destino -->
                     <p class="card-text">
-                        <strong>Ubicación:</strong> <span th:text="${destino['destino'].ubicacion}"></span><br>
-                        <strong>Departamento:</strong> <span th:text="${destino['destino'].departamento.nombre}"></span><br>
-                        <strong>Categoría:</strong> <span th:text="${destino['destino'].categoria.nombre}"></span>
+                        <strong>📍 Ubicación:</strong> <span th:text="${destino['destino'].ubicacion}"></span><br>
+                        <strong>🏛️ Departamento:</strong> <span th:text="${destino['destino'].departamento.nombre}"></span><br>
+                        <strong>📌 Categoría:</strong> <span th:text="${destino['destino'].categoria.nombre}"></span>
                     </p>
                 </div>
             </div>
         </div>
     </div>
-
 
     <!-- Paginación con estilo premium -->
     <nav aria-label="Page navigation example" class="mt-4">

@@ -5,6 +5,70 @@
 <head>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
+        h2 {
+            margin-top: 10px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .titulo-destinos {
+            color: #007bff;      /* Similar al text-primary */
+            font-weight: 700;    /* fw-bold */
+        }
+
+        .btn-nuevo {
+            margin-top: 10px;
+            font-family: 'Poppins', sans-serif;
+            background-color: #4facfe;
+            color: white !important;
+            border: 0;
+            padding: 0.5rem 1rem !important;
+            font-size: 0.9rem !important;
+        }
+
+        .btn-nuevo:hover {
+            background-color: #329af0 !important;
+        }
+
+        /* Botones de acción */
+        .btn-detalles {
+            background-color: #6c757d;
+            color: white !important;
+            border: none;
+            border-radius: 6px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .btn-detalles:hover {
+            background-color: #5a6268 !important;
+        }
+
+        .btn-editar {
+            background-color: #17a2b8;
+            color: white !important;
+            border: none;
+            border-radius: 6px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .btn-editar:hover {
+            background-color: #138496 !important;
+        }
+
+        .btn-eliminar {
+            background-color: #dc3545;
+            color: white !important;
+            border: none;
+            border-radius: 6px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .btn-eliminar:hover {
+            background-color: #c82333 !important;
+        }
+
         /* Paginación */
         .pagination .page-link {
             color: #5a6c7d;
@@ -33,6 +97,7 @@
         }
     </style>
 </head>
+<body>
 <div layout:fragment="content">
     <!-- Mensajes -->
     <div th:if="${msg != null}">
@@ -54,34 +119,46 @@
         </script>
     </div>
 
-    <h2>Listado de Destinos Turísticos</h2>
-    <a th:href="@{/destinoTuristicos/create}" class="btn btn-primary mb-3">Nuevo destino</a>
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+        <h2 class="titulo-destinos">Listado de Destinos Turísticos</h2>
+        <a th:href="@{/destinoTuristicos/create}"
+           class="btn btn-lg shadow-sm text-white px-4 py-2 btn-nuevo mb-3">
+            ➕ Nuevo destino</a>
+    </div>
+
     <div class="row row-cols-1 row-cols-md-3 g-4">
         <div class="col" th:each="item : ${destinoTuristicos}">
             <div class="card h-100">
+
                 <!-- Imagen principal -->
                 <img th:if="${#lists.isEmpty(item.imagenes) == false}"
                      th:src="'data:image/png;base64,' + ${item.imagenes[0].base64Image}"
                      class="card-img-top" style="height:200px; object-fit: cover;" alt="Imagen destino">
+
                 <img th:if="${#lists.isEmpty(item.imagenes)}"
                      src="/images/placeholder.png"
                      class="card-img-top" style="height:200px; object-fit: cover;" alt="Imagen no disponible">
+
                 <div class="card-body">
                     <h5 class="card-title" th:text="${item.destino.nombre}">Nombre destino</h5>
+
                     <!-- Ubicación, Departamento y Categoría -->
                     <p class="card-text">
-                        <strong>Ubicación:</strong> <span th:text="${item.destino.ubicacion}"></span><br>
-                        <strong>Departamento:</strong> <span th:text="${item.destino.departamento.nombre}"></span><br>
-                        <strong>Categoría:</strong> <span th:text="${item.destino.categoria.nombre}"></span>
+                        <strong>📍 Ubicación:</strong> <span th:text="${item.destino.ubicacion}"></span><br>
+                        <strong>🏛️ Departamento:</strong> <span th:text="${item.destino.departamento.nombre}"></span><br>
+                        <strong>📌 Categoría:</strong> <span th:text="${item.destino.categoria.nombre}"></span>
                     </p>
                 </div>
+
                 <div class="card-footer d-flex gap-1">
                     <a th:href="@{/destinoTuristicos/details/{id}(id=${item.destino.id})}"
-                       class="btn btn-secondary btn-sm">Detalles</a>
+                       class="btn btn-sm btn-detalles">Detalles</a>
+
                     <a th:href="@{/destinoTuristicos/edit/{id}(id=${item.destino.id})}"
-                       class="btn btn-info btn-sm">Editar</a>
+                       class="btn btn-sm btn-editar">Editar</a>
+
                     <a th:href="@{/destinoTuristicos/remove/{id}(id=${item.destino.id})}"
-                       class="btn btn-danger btn-sm"
+                       class="btn btn-sm btn-eliminar"
                        onclick="return confirm('¿Seguro que deseas eliminar este destino?');">Eliminar</a>
                 </div>
             </div>
@@ -100,4 +177,5 @@
         </ul>
     </nav>
 </div>
+</body>
 </html>

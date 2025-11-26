@@ -5,6 +5,10 @@
 <head>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        .mt-after-header {
+            margin-top: 2rem !important;
+        }
+
         body {
             font-family: 'Poppins', sans-serif;
             margin: 0;
@@ -164,7 +168,7 @@
                           th:object="${destinoTuristico}"
                           method="post"
                           enctype="multipart/form-data">
-                        <div class="row">
+                        <div class="row mt-after-header">
                             <div class="col-md-10 offset-md-1">
                                 <div class="form-group">
                                     <label for="nombre">Nombre</label>
