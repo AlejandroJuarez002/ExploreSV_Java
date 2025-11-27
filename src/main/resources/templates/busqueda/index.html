@@ -3,8 +3,74 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="layouts/_mainLayout">
+
+<head>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(
+                180deg,
+                #d9d9d9 0%,      /* gris claro suave */
+                #eae7e2 100%     /* blanco hueso, no blanco puro */
+            );
+        }
+
+        .titulo-busqueda {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2rem; /* similar al h2 de Categorías */
+            font-weight: 700;
+            color: #0d6efd; /* el mismo azul del sistema */
+            margin-top: 25px;   /* separación del navbar */
+            margin-bottom: 25px; /* separación del formulario */
+        }
+
+        /* Fuente consistente */
+        h1, label, .form-control, .form-select, .btn {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Inputs de texto y selects */
+        .search-input, .search-select {
+            border: 1px solid #ced4da;
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .search-input:focus,
+        .search-select:focus {
+            border-color: #4facfe !important;
+            box-shadow: 0 0 8px rgba(79, 172, 254, 0.4);
+        }
+
+        /* Botón Buscar */
+        .btn-buscar {
+            background-color: #4facfe;
+            color: white !important;
+            border: none;
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+        }
+
+        .btn-buscar:hover {
+            background-color: #329af0;
+            color: white !important;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(79,172,254,0.35);
+        }
+    </style>
+</head>>
+
 <div layout:fragment="content">
-    <h1>Buscar Destinos Turísticos</h1>
+    <h2 class="titulo-busqueda">Busqueda de Destinos Turísticos</h2>
 
     <!-- Formulario de búsqueda -->
     <form action="/busqueda" method="get" class="mb-4">
@@ -12,13 +78,14 @@
             <!-- Campo de texto para el nombre -->
             <div class="col-md-4">
                 <label for="nombre" class="form-label">Nombre</label>
-                <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Nombre del destino" th:value="${nombre}" />
+                <input type="text" id="nombre" name="nombre"
+                       class="form-control search-input" placeholder="Nombre del destino" th:value="${nombre}" />
             </div>
 
             <!-- Combo box para categoría -->
             <div class="col-md-3">
                 <label for="categoria" class="form-label">Categoría</label>
-                <select id="categoria" name="categoria" class="form-select">
+                <select id="categoria" name="categoria" class="form-select search-select">
                     <option value="" th:text="'Todas las categorías'"></option>
                     <option th:each="cat : ${categorias}" th:value="${cat.nombre}" th:text="${cat.nombre}" th:selected="${categoria == cat.nombre}"></option>
                 </select>
@@ -27,7 +94,7 @@
             <!-- Combo box para departamento -->
             <div class="col-md-3">
                 <label for="departamento" class="form-label">Departamento</label>
-                <select id="departamento" name="departamento" class="form-select">
+                <select id="departamento" name="departamento" class="form-select search-select">
                     <option value="" th:text="'Todos los departamentos'"></option>
                     <option th:each="depto : ${departamentos}" th:value="${depto.nombre}" th:text="${depto.nombre}" th:selected="${departamento == depto.nombre}"></option>
                 </select>
@@ -35,7 +102,7 @@
 
             <!-- Botón de búsqueda -->
             <div class="col-md-2">
-                <button type="submit" class="btn btn-outline-primary w-100">Buscar</button>
+                <button type="submit" class="btn btn-buscar w-100">Buscar</button>
             </div>
         </div>
     </form>
